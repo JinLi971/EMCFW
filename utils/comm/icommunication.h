@@ -5,15 +5,16 @@
 #include <mpi.h>
 #include <assert.h>
 
+#include "utils/serializer/ISerializable.hh"
+
 class IData;
 
-template <class T>
 class IComm : public ICommConfig
 {
 public:
    virtual ~IComm() {}
 
-   virtual void sync(T* data, int dest = -1, int root = -1, int source = MPI_ANY_SOURCE)
+   virtual void sync(ISerializable* data, int dest = -1, int root = -1, int source = MPI_ANY_SOURCE)
    {
       switch (mMode)
       {
@@ -42,10 +43,10 @@ public:
    }
 
 protected:
-   virtual void send(T* data, int dest) = 0;
-   virtual void rec(int source, T *data) = 0;
-   virtual void rec(T *data) = 0;
-   virtual void broadcast(T* data, int root) = 0;
+   virtual void send(ISerializable* data, int dest) = 0;
+   virtual void rec(int source, ISerializable *data) = 0;
+   virtual void rec(ISerializable *data) = 0;
+   virtual void broadcast(ISerializable* data, int root) = 0;
 
 protected:
    enum

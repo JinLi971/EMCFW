@@ -5,6 +5,7 @@
 #include <string>
 #include <deque>
 #include <stdio.h>
+#include "GlobalClassId.hh"
 
 class SerializationBase
 {
@@ -41,6 +42,12 @@ public:
    virtual void operator <<(const unsigned long &value);
    virtual void operator >>(unsigned long &value);
 
+   virtual void operator <<(const unsigned int &value);
+   virtual void operator >>(unsigned int &value);
+
+   virtual void operator <<(const GlobalClassId::ClassId &value);
+   virtual void operator >>(GlobalClassId::ClassId &value);
+
    template<typename ArrayType>
    void packPureArray(const int arrayLength, const ArrayType *payload)
    {
@@ -76,10 +83,10 @@ public:
    virtual const char *getPackedString() const;
    virtual void setPackedString(const char* packedString);
 
-   virtual int getTotalLength();
-   virtual int getHeadLength() { return sizeof(mTotalLength); }
+   virtual int getTotalLength() const;
+   virtual int getHeadLength() const  { return sizeof(mTotalLength); }
 
-   virtual int getSize() { return getTotalLength() + getHeadLength(); }
+   virtual int getSize() const { return getTotalLength() + getHeadLength(); }
 
    virtual void clearContent();
 

@@ -3,16 +3,17 @@
 
 #include <string>
 #include <vector>
+#include <utils/serializer/ISerializable.hh>
 
 namespace DataSet
 {
 namespace Control
 {
 
-class Config
+class LoadSpec : public ISerializable
 {
 public:
-    Config(const std::string& configFilePath,
+    LoadSpec(const std::string& configFilePath,
                int startIndex,
                int endIndex,
                int controlId,
@@ -38,6 +39,11 @@ protected:
     int mControlId;
     std::vector<int> mNodeCluster;
 
+
+    // ISerializable interface
+public:
+    void serialize();
+    void deserialize();
 };
 
 }
