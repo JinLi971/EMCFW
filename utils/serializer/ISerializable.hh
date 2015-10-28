@@ -1,0 +1,4 @@
+#ifndef ISERIALIZABLE_HH
+#define ISERIALIZABLE_HH
+
+#endif // ISERIALIZABLE_HH
