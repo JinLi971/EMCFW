@@ -1,20 +1,19 @@
 #ifndef MPICONNECTION_H
 #define MPICONNECTION_H
 
-#include "comm/icommunication.h"
+#include "icommunication.h"
 #include <mpi.h>
 #include <time.h>
 
-template<class T>
-class MpiConnection : public IComm<T>
+class MpiConnection : public IComm
 {
 public:
    MpiConnection();
 
-   virtual void send(T* data, int dest);
-   virtual void rec(int source, T *data);
-   virtual void rec(T *data);
-   virtual void broadcast(T* data, int root);
+   virtual void send(ISerializable *data, int dest);
+   virtual void rec(int source, ISerializable *data);
+   virtual void rec(ISerializable *data);
+   virtual void broadcast(ISerializable *data, int root);
 
 private:
    void getRandomTag();
@@ -23,28 +22,26 @@ private:
 
 };
 
-template<class T>
-MpiConnection<T>::MpiConnection()
+MpiConnection::MpiConnection()
 {
 
 }
 
-template<class T>
-void MpiConnection<T>::send(T* data, int dest)
+void MpiConnection::send(ISerializable* data, int dest)
 {
    getRandomTag();
    // tag =  1 is very special, it is just for send tag's tag
-   MPI_Send(&mRandomTag, 1, MPI_INT, dest, IComm<T>::CONTROL_TAG, MPI_COMM_WORLD);
-   int size = -1;
-   const char *serilizedData = data->serialize(&size);
+   MPI_Send(&mRandomTag, 1, MPI_INT, dest, IComm::CONTROL_TAG, MPI_COMM_WORLD);
+   data->serialize();
+   int size = data->getSerializer().getSize();
+   const char *serilizedData = data->getSerializer().getPackedString();
    MPI_Send(serilizedData, size, MPI_BYTE, dest, mRandomTag, MPI_COMM_WORLD);
 }
 
-template<class T>
-void MpiConnection<T>::rec(int source, T* data)
+void MpiConnection::rec(int source, ISerializable* data)
 {
    MPI_Status status;
-   MPI_Recv(&mRandomTag, 1, MPI_INT, source, IComm<T>::CONTROL_TAG, MPI_COMM_WORLD, &status);
+   MPI_Recv(&mRandomTag, 1, MPI_INT, source, IComm::CONTROL_TAG, MPI_COMM_WORLD, &status);
 
    int sender = -1;
    int size = probeData(source, &sender, &status);
@@ -56,14 +53,12 @@ void MpiConnection<T>::rec(int source, T* data)
    delete dataBuffer;
 }
 
-template<class T>
-void MpiConnection<T>::rec(T* data)
+void MpiConnection::rec(ISerializable* data)
 {
    return rec(MPI_ANY_SOURCE, data);
 }
 
-template<class T>
-void MpiConnection<T>::broadcast(T* data, int root)
+void MpiConnection::broadcast(ISerializable* data, int root)
 {
    char* dataBuffer = NULL;
    int size = -1;
@@ -92,8 +87,7 @@ void MpiConnection<T>::broadcast(T* data, int root)
    delete dataBuffer;
 }
 
-template<class T>
-int MpiConnection<T>::probeData(const int source, int* sender, MPI_Status *status)
+int MpiConnection::probeData(const int source, int* sender, MPI_Status *status)
 {
    MPI_Probe(source, mRandomTag, MPI_COMM_WORLD, status);
 
@@ -106,8 +100,7 @@ int MpiConnection<T>::probeData(const int source, int* sender, MPI_Status *statu
    return size;
 }
 
-template<class T>
-void MpiConnection<T>::getRandomTag()
+void MpiConnection::getRandomTag()
 {
    srand(time(NULL));
    mRandomTag = rand() % 511523 + 1;

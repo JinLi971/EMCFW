@@ -63,6 +63,29 @@ void SerializationBase::operator >>(unsigned long &value)
    getValue<unsigned long>(&value);
 }
 
+void SerializationBase::operator <<(const unsigned int &value)
+{
+   cpyValue<unsigned int>(&value);
+}
+
+void SerializationBase::operator >>(unsigned int &value)
+{
+   getValue<unsigned int>(&value);
+}
+
+void SerializationBase::operator <<(const GlobalClassId::ClassId &value)
+{
+   int tempValue = (int) value;
+   cpyValue<int>(&tempValue);
+}
+
+void SerializationBase::operator >>(GlobalClassId::ClassId &value)
+{
+   int tempValue = -1;
+   getValue<int>(&value);
+   value =(GlobalClassId::ClassId) tempValue;
+}
+
 void SerializationBase::operator <<(const bool &value)
 {
    cpyValue<bool>(&value);
@@ -129,7 +152,7 @@ void SerializationBase::setPackedString(const char *packedString)
 }
 
 
-int SerializationBase::getTotalLength()
+int SerializationBase::getTotalLength() const
 {
    return mTotalLength;
 }
