@@ -1,8 +1,14 @@
-TEMPLATE = app
-CONFIG += console
-CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c11
+
+QT       -= gui
+
+TARGET = EMCFW
+TEMPLATE = lib
+
+QMAKE_CXXFLAGS += -std=c++11
+
+DEFINES += EMCFW_LIBRARY
 
 SOURCES += main.cpp \
     node/NodeFactory.cc \
@@ -56,3 +62,9 @@ INCLUDEPATH += /usr/local/include/spimage \
    /usr/include/mpi/
 DEPENDPATH += /usr/local/include/spimage \
    /usr/local/include
+
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+}
+

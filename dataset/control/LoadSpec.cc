@@ -27,7 +27,7 @@ LoadSpec::LoadSpec()
       mEndIndex(-1),
       mControlId(-1)
 {
-
+    mClassId = GlobalClassId::LOAD_SPEC;
 }
 
 void LoadSpec::serialize()
@@ -65,7 +65,7 @@ void LoadSpec::deserialize()
     for (int i = 0, tmp = -1; i < sizeOfNodeCluster; ++ i, tmp = -1)
     {
         mSerializer >> tmp;
-        assert(tmp != -1);
+        assert(tmp >= 0);
         mNodeCluster.push_back(tmp);
     }
 }

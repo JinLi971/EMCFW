@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <utils/serializer/ISerializable.hh>
+#include "utils/serializer/ISerializable.hh"
 
 namespace DataSet
 {
@@ -22,6 +22,8 @@ public:
     LoadSpec();
 
     const std::string& getConfigFilePath() { return mConfigFilePath; }
+    void setConfigFilePath(const std::string& configPath) { mConfigFilePath = configPath; }
+
     int getStartIndex() { return mStartIndex; }
     void setStartIndex(int value) { mStartIndex = value; }
 
