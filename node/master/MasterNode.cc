@@ -1,19 +1,20 @@
 #include "MasterNode.hh"
 #include "utils/comm/icommunication.h"
-//#include <libconfig.h++>
+#include <libconfig.h++>
 #include "dispatcher/Dispatcher.hh"
+#include "dispatcher/DispatcherFactory.h"
 
 namespace Node
 {
 namespace Master
 {
 
-MasterNode::MasterNode()
-    : mTaskId(-1)
+MasterNode::MasterNode(int taskId)
+    : mTaskId(taskId)
 {
 }
 
-int MasterNode::getTaskId()
+int MasterNode::getTaskId() const
 {
     return mTaskId;
 }
@@ -32,11 +33,28 @@ void MasterNode::init()
 void MasterNode::dispatchJob()
 {
     // Apply different job dispatch strategies.
-    Dispatcher::Dispatcher dispatcher = Dispatcher::DispatcherFactory::getDispatcher(Dispatcher::DispatcherFactory::EVEN,
+    Dispatcher::IDispatcher *dispatcher = Dispatcher::DispatcherFactory::getDispatcher(Dispatcher::DispatcherFactory::EVEN,
                                                                          mConf,
                                                                          mSlaveList,
                                                                          *this);
-    dispatcher.apply();
+    dispatcher->apply();
+
+    // Now dispatch all jobs to the slaves
+    for(int i = 0; i < mSlaveList.size(); ++ i)
+    {
+        INode* slaveAgent = mSlaveList[i];
+        slaveAgent->dispatchJob();
+    }
+}
+
+const DataSet::Control::LoadSpec &MasterNode::getLoadSpec()
+{
+    // Do nothing
+}
+
+void MasterNode::setLoadSpec(const DataSet::Control::LoadSpec &loadSpec)
+{
+    // Do nothing
 }
 
 void MasterNode::loadData()
@@ -47,17 +65,17 @@ void MasterNode::loadData()
 void MasterNode::loadMasterConf()
 {
     // Read conf from the config file under the same dir of binary
-    /*Config config;
+    libconfig::Config config;
     try
     {
         config.readFile("./emc.conf");
     }
-    catch (FileIOException& e)
+    catch (libconfig::FileIOException& e)
     {
         fprintf(stderr, "FileIOException Error: %s\n", e.what());
         exit(1);
     }
-    catch (ParseException& ee)
+    catch (libconfig::ParseException& ee)
     {
         fprintf(stderr, "ParseException Error: %d - %s\n", ee.getLine(), ee.getError());
         exit(1);
@@ -66,7 +84,7 @@ void MasterNode::loadMasterConf()
     config.lookupValue("DataDir", mConf.dataFileDir);
     config.lookupValue("StartIndex", mConf.dataStartIndex);
     config.lookupValue("EndIndex", mConf.dataEndIndex);
-    config.lookupValue("Dispatcher", mConf.dispatchStrategy);*/
+    config.lookupValue("Dispatcher", mConf.dispatchStrategy);
 }
 
 }

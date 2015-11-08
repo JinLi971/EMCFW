@@ -9,7 +9,7 @@ namespace Node {
 class NodeFactory
 {
 public:
-    static INode* getNode(NodeConstants::NodeType type);
+    static INode* getNode(NodeConstants::NodeType type, int taskId);
 
 private:
     NodeFactory() {}

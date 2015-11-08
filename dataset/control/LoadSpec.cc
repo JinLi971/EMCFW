@@ -1,5 +1,6 @@
 #include "LoadSpec.hh"
 #include <utils/serializer/GlobalClassId.hh>
+#include <assert.h>
 
 namespace DataSet
 {
@@ -9,14 +10,22 @@ namespace Control
 LoadSpec::LoadSpec(const std::string &configFilePath,
                int startIndex,
                int endIndex,
-               int controlId,
+               const int controlId,
                const std::vector<int> &nodeCluster)
-    : mClassId(GlobalClassId::LOAD_SPEC),
-      mConfigFilePath(configFilePath),
+    : mConfigFilePath(configFilePath),
       mStartIndex(startIndex),
       mEndIndex(endIndex),
       mControlId(controlId),
       mNodeCluster(nodeCluster)
+{
+    mClassId = GlobalClassId::LOAD_SPEC;
+}
+
+LoadSpec::LoadSpec()
+    : mConfigFilePath(""),
+      mStartIndex(-1),
+      mEndIndex(-1),
+      mControlId(-1)
 {
 
 }
@@ -30,7 +39,7 @@ void LoadSpec::serialize()
     mSerializer << mControlId;
     // push in size of the node cluster
     mSerializer << (unsigned int) mNodeCluster.size();
-    for (int i = 0; i < mNodeCluster.size(); ++ i)
+    for (unsigned int i = 0; i < mNodeCluster.size(); ++ i)
     {
         mSerializer << mNodeCluster[i];
     }
@@ -56,6 +65,7 @@ void LoadSpec::deserialize()
     for (int i = 0, tmp = -1; i < sizeOfNodeCluster; ++ i, tmp = -1)
     {
         mSerializer >> tmp;
+        assert(tmp != -1);
         mNodeCluster.push_back(tmp);
     }
 }

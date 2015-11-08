@@ -14,6 +14,7 @@ public:
 
     virtual GlobalClassId::ClassId getClassId() { return mClassId; }
     virtual const SerializationBase& getSerializer() { return mSerializer; }
+    virtual SerializationBase& getSerializerRef() { return mSerializer; }
 
 protected:
     GlobalClassId::ClassId mClassId;

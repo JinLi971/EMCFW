@@ -82,7 +82,7 @@ void SerializationBase::operator <<(const GlobalClassId::ClassId &value)
 void SerializationBase::operator >>(GlobalClassId::ClassId &value)
 {
    int tempValue = -1;
-   getValue<int>(&value);
+   getValue<int>(&tempValue);
    value =(GlobalClassId::ClassId) tempValue;
 }
 

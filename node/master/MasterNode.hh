@@ -11,15 +11,17 @@ namespace Master {
 class MasterNode : public INode
 {
 public:
-    MasterNode();
+    MasterNode(int taskId);
 
     // INode interface
 public:
-    int getTaskId();
-    void setTaskId(int value);
+    virtual int getTaskId() const;
+    virtual void setTaskId(int value);
     virtual void init();
     virtual void loadData();
     virtual void dispatchJob();
+    virtual const DataSet::Control::LoadSpec &getLoadSpec();
+    virtual void setLoadSpec(const DataSet::Control::LoadSpec &loadSpec);
 
 private:
     void loadMasterConf();

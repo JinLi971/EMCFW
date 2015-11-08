@@ -13,11 +13,6 @@ DispatcherBase::DispatcherBase(const MasterConf &conf,
 {
 }
 
-void DispatcherBase::dispatch()
-{
-
-}
-
 }
 }
 }

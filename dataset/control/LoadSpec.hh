@@ -16,8 +16,10 @@ public:
     LoadSpec(const std::string& configFilePath,
                int startIndex,
                int endIndex,
-               int controlId,
+               const int controlId,
                const std::vector<int>& nodeCluster);
+
+    LoadSpec();
 
     const std::string& getConfigFilePath() { return mConfigFilePath; }
     int getStartIndex() { return mStartIndex; }

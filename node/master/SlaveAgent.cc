@@ -9,7 +9,8 @@ SlaveAgent::SlaveAgent(const int taskId)
 
 }
 
-SlaveAgent::setLoadSpec(const DataSet::Control::LoadSpec &loadSpec)
+
+void SlaveAgent::setLoadSpec(const DataSet::Control::LoadSpec &loadSpec)
 {
     mLoadSpec = loadSpec;
 }
@@ -24,7 +25,8 @@ void SlaveAgent::dispatchJob()
     // Send the loadSpec to the slave node
     // the slaveAgent has the same taskId of the slave
     mCommunicator.setMode(IComm::SEND);
-    mCommunicator.sync(mLoadSpec, mTaskId);
+    mCommunicator.sync(&mLoadSpec, mTaskId);
+    mCommunicator.barrier();
 }
 
 void SlaveAgent::loadData()

@@ -2,6 +2,7 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
+CONFIG += c11
 
 SOURCES += main.cpp \
     node/NodeFactory.cc \
@@ -16,7 +17,9 @@ SOURCES += main.cpp \
     node/master/dispatcher/DispatcherBase.cc \
     utils/serializer/serializationbase.cpp \
     utils/serializer/SpImageSerializer.cpp \
-    node/master/SlaveAgent.cc
+    node/master/SlaveAgent.cc \
+    utils/comm/mpiconnection.cc \
+    node/slave/SlaveNode.cc
 
 HEADERS += \
     node/NodeConstants.hh \
@@ -39,15 +42,17 @@ HEADERS += \
     utils/serializer/ISerializable.hh \
     utils/serializer/GlobalClassId.hh \
     node/master/SlaveAgent.hh \
-    node/master/dispatcher/Dispatcher.hh
+    node/master/dispatcher/Dispatcher.hh \
+    node/master/dispatcher/DispatcherFactory.h \
+    node/slave/SlaveNode.hh \
+    dataset/Constants.hh
 
-unix: LIBS += -L/usr/local/lib64/ -lspimage
+LIBS += -L/usr/local/lib64/ -lspimage
+LIBS += -L/usr/lib/ -lmpi
+LIBS += -L/usr/lib/x86_64-linux-gnu -lconfig++
 
 INCLUDEPATH += /usr/local/include/spimage \
     /usr/local/include \
-   /usr/local/include/vtk-5.10/mrmpi \
-   /usr/local/include/vtk-5.10/
+   /usr/include/mpi/
 DEPENDPATH += /usr/local/include/spimage \
-   /usr/local/include \
-   /usr/local/include/vtk-5.10/mrmpi \
-   /usr/local/include/vtk-5.10/
+   /usr/local/include

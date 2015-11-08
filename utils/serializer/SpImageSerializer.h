@@ -1,7 +1,7 @@
 #ifndef SPIMAGESERIALIZER_HH
 #define SPIMAGESERIALIZER_HH
 
-#include "dataset/serializationbase.h"
+#include "utils/serializer/serializationbase.h"
 
 class SpImageSerializer : public SerializationBase
 {

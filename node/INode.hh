@@ -8,7 +8,7 @@ namespace Node {
 class INode {
 
 public:
-    virtual int getTaskId() = 0;
+    virtual int getTaskId() const = 0;
     virtual void setTaskId(int value) = 0;
 
     /**
@@ -22,6 +22,8 @@ public:
      * @param loadSpec ref to theinstance of the LoadSpec, the INode will copy the loadSpec instance
      */
     virtual void setLoadSpec(const DataSet::Control::LoadSpec& loadSpec) = 0;
+
+    virtual void dispatchJob() = 0;
 
     virtual void init() = 0;
     virtual void loadData() = 0;

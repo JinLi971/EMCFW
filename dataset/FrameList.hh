@@ -2,6 +2,7 @@
 #define FRAMELIST_HH
 
 #include <vector>
+#include <cstdio>
 
 namespace DataSet
 {

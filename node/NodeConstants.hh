@@ -9,7 +9,8 @@ public:
     enum NodeType {
         NODE_NONE = -1,
         MASTER = 0,
-        SLAVE
+        SLAVE,
+        SLAVE_AGENT
     };
 
     enum ProcessorType {
