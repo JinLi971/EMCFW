@@ -49,6 +49,21 @@ public:
         }
     }
 
+    virtual void sync(int dest = -1,
+                      int root = -1,
+                      int source = MPI_ANY_SOURCE,
+                      bool isBarrier = false)
+    {
+        sync(mDataPtr, dest, root, source, isBarrier);
+    }
+
+public:
+    const ISerializable* getData() { return mDataPtr; }
+    void setData(ISerializable* dataPtr) { mDataPtr = dataPtr; }
+
+protected:
+    ISerializable* mDataPtr;
+
 protected:
     virtual void send(ISerializable* data, int dest) = 0;
     virtual void rec(int source, ISerializable *data) = 0;

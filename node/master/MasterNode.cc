@@ -40,7 +40,7 @@ void MasterNode::dispatchJob()
     dispatcher->apply();
 
     // Now dispatch all jobs to the slaves
-    for(int i = 0; i < mSlaveList.size(); ++ i)
+    for(unsigned int i = 0; i < mSlaveList.size(); ++ i)
     {
         INode* slaveAgent = mSlaveList[i];
         slaveAgent->dispatchJob();
@@ -49,10 +49,10 @@ void MasterNode::dispatchJob()
 
 const DataSet::Control::LoadSpec &MasterNode::getLoadSpec()
 {
-    // Do nothing
+    return mEmptyLoadSpec;
 }
 
-void MasterNode::setLoadSpec(const DataSet::Control::LoadSpec &loadSpec)
+void MasterNode::setLoadSpec(const DataSet::Control::LoadSpec &/*loadSpec*/)
 {
     // Do nothing
 }

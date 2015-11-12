@@ -1,5 +1,5 @@
 #include "TestSerialization.hh"
-#include <gtest.h>
+#include <gtest/gtest.h>
 #include "../../../dataset/control/LoadSpec.hh"
 #include "../../../node/master/MasterConf.hh"
 

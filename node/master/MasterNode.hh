@@ -30,6 +30,7 @@ private:
     int mTaskId;
     MasterConf mConf;
     std::vector<INode *> mSlaveList;
+    DataSet::Control::LoadSpec mEmptyLoadSpec;
 };
 
 } //Master NS

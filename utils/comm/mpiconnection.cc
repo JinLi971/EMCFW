@@ -13,6 +13,7 @@ void MpiConnection::send(ISerializable *data, int dest)
     getRandomTag();
     // tag =  1 is very special, it is just for send tag's tag
     MPI_Send(&mRandomTag, 1, MPI_INT, dest, IComm::CONTROL_TAG, MPI_COMM_WORLD);
+    data->getSerializerRef().clearContent();
     data->serialize();
     int size = data->getSerializer().getSize();
     const char *serilizedData = data->getSerializer().getPackedString();
@@ -31,6 +32,7 @@ void MpiConnection::rec(int source, ISerializable *data)
     char* dataBuffer = new char[size];
 
     MPI_Recv(dataBuffer, size, MPI_BYTE, sender, mRandomTag, MPI_COMM_WORLD, &status);
+    data->getSerializerRef().clearContent();
     data->getSerializerRef().setPackedString(dataBuffer);
     data->deserialize();
     delete dataBuffer;

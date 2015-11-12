@@ -1,7 +1,7 @@
 #ifndef TESTSERIALIZATION_HH
 #define TESTSERIALIZATION_HH
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 #include "../../../utils/serializer/ISerializable.hh"
 #include "../../../utils/serializer/serializationbase.h"
 

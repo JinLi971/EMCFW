@@ -47,6 +47,8 @@ void LoadSpec::serialize()
 
 void LoadSpec::deserialize()
 {
+    mNodeCluster.clear();
+
     mSerializer >> mClassId;
     assert (mClassId == GlobalClassId::LOAD_SPEC);
 
