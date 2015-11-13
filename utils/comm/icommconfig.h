@@ -4,23 +4,27 @@
 class ICommConfig
 {
 public:
-   typedef enum
-   {
-      IDLE = 0,
-      BROADCAST,
-      SEND,
-      REC
-   }Mode;
+    typedef enum
+    {
+        IDLE = 0,
+        BROADCAST,
+        SEND,
+        REC,
+        GATHER_ROOT,
+        GATHER_CLIENT
+    }Mode;
 
-   virtual Mode getMode() { return mMode; }
-   virtual void setMode(Mode value) { mMode = value; }
+    const static int ROOT_ID = 0;
 
-   virtual void setRank (int value) { mRank = value; }
-   virtual int getRank () { return mRank; }
+    virtual Mode getMode() { return mMode; }
+    virtual void setMode(Mode value) { mMode = value; }
+
+    virtual void setRank (int value) { mRank = value; }
+    virtual int getRank () { return mRank; }
 
 protected:
-   Mode mMode;
-   int mRank;
+    Mode mMode;
+    int mRank;
 };
 
 #endif // ICOMMCONFIG_H

@@ -26,8 +26,10 @@ public:
     DataSet::Control::LoadSpec mBeforeSend;
     DataSet::Control::LoadSpec mAfterSend;
 
+    void testGather();
 private:
-    void compareResult();
+    void compareResult(DataSet::Control::LoadSpec &expected,
+                       DataSet::Control::LoadSpec &actual);
 };
 
 #endif // TESTMPICONNECTION_HH

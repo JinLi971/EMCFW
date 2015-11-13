@@ -39,16 +39,17 @@ void TestMpiConnection::TearDown()
     mConnection.barrier();
 }
 
-void TestMpiConnection::compareResult()
+void TestMpiConnection::compareResult(DataSet::Control::LoadSpec& expected,
+                                      DataSet::Control::LoadSpec& actual)
 {
-    EXPECT_EQ (mBeforeSend.getConfigFilePath().compare(mAfterSend.getConfigFilePath()), 0);
-    EXPECT_EQ (mBeforeSend.getControlId(), mAfterSend.getControlId());
-    EXPECT_EQ (mBeforeSend.getStartIndex(), mAfterSend.getStartIndex());
-    EXPECT_EQ (mBeforeSend.getEndIndex(), mAfterSend.getEndIndex());
-    EXPECT_EQ (mBeforeSend.getNodeCluster().size(), mAfterSend.getNodeCluster().size());
-    EXPECT_EQ (mBeforeSend.getNodeCluster()[0], mAfterSend.getNodeCluster()[0]);
-    EXPECT_EQ (mBeforeSend.getNodeCluster()[1], mAfterSend.getNodeCluster()[1]);
-    EXPECT_EQ (mBeforeSend.getNodeCluster()[2], mAfterSend.getNodeCluster()[2]);
+    EXPECT_EQ (expected.getConfigFilePath().compare(actual.getConfigFilePath()), 0);
+    EXPECT_EQ (expected.getControlId(), actual.getControlId());
+    EXPECT_EQ (expected.getStartIndex(), actual.getStartIndex());
+    EXPECT_EQ (expected.getEndIndex(), actual.getEndIndex());
+    EXPECT_EQ (expected.getNodeCluster().size(), actual.getNodeCluster().size());
+    EXPECT_EQ (expected.getNodeCluster()[0], actual.getNodeCluster()[0]);
+    EXPECT_EQ (expected.getNodeCluster()[1], actual.getNodeCluster()[1]);
+    EXPECT_EQ (expected.getNodeCluster()[2], actual.getNodeCluster()[2]);
 }
 
 void TestMpiConnection::testBasicSendRecv()
@@ -65,7 +66,7 @@ void TestMpiConnection::testBasicSendRecv()
         mConnection.setMode(IComm::REC);
         mConnection.setData(&mAfterSend);
         mConnection.sync();
-        compareResult();
+        compareResult(mBeforeSend, mAfterSend);
     }
 }
 
@@ -80,7 +81,7 @@ void TestMpiConnection::testBasicBroadcast()
         mConnection.sync(&mBeforeSend, -1, mTaskId);
     } else {
         mConnection.sync(&mAfterSend, -1, 0);
-        compareResult();
+        compareResult(mBeforeSend, mAfterSend);
     }
 
     // Broadcast from slave
@@ -90,7 +91,37 @@ void TestMpiConnection::testBasicBroadcast()
         mConnection.sync(&mBeforeSend, -1, mTaskId);
     } else {
         mConnection.sync(&mAfterSend, -1, mSize - 1);
-        compareResult();
+        compareResult(mBeforeSend, mAfterSend);
+    }
+}
+
+void TestMpiConnection::testGather()
+{
+    if(mTaskId == 0)
+    {
+        mConnection.setMode(IComm::GATHER_ROOT);
+        mAfterSend.setControlId(100);
+        std::vector<ISerializable* > dataVector;
+
+        for(int i = 0; i < mSize; ++ i)
+        {
+            dataVector.push_back(new DataSet::Control::LoadSpec());
+        }
+
+        mConnection.setVectorData(&dataVector);
+        mConnection.setData(&mBeforeSend);
+        mConnection.sync();
+
+        for(int i = 0; i < mSize; ++ i)
+        {
+            compareResult(mBeforeSend,
+                          *(dynamic_cast<DataSet::Control::LoadSpec *>(dataVector[i])));
+        }
+    } else {
+        mConnection.setMode(IComm::GATHER_CLIENT);
+
+        mConnection.setData(&mBeforeSend);
+        mConnection.sync();
     }
 }
 
@@ -105,4 +136,10 @@ TEST_F(TestMpiConnection, testBroadcast)
 {
     if (mSize == 1) return;
     testBasicBroadcast();
+}
+
+TEST_F(TestMpiConnection, testGather)
+{
+    if(mSize == 1) return;
+    testGather();
 }

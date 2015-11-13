@@ -1,4 +1,5 @@
 #include "mpiconnection.h"
+#include <vector>
 
 
 
@@ -87,6 +88,65 @@ void MpiConnection::setCommunicator(void *communicator)
 {
     assert(mComm != NULL);
     mComm = static_cast<MPI_Comm*>(communicator);
+}
+
+void MpiConnection::gather(std::vector<ISerializable *>& data, ISerializable* sendData, unsigned int mpiSize)
+{
+    // Meaningless to gather from only himself!
+    assert (mpiSize >= 2);
+
+    sendData->serialize();
+    int sendSize = sendData->getSerializer().getSize();
+
+    char* dataBuffer = NULL;
+
+    int sizeArray[mpiSize];
+
+    MPI_Gather(&sendSize, 1, MPI_INT, sizeArray, 1, MPI_INT, ROOT_ID, *mComm);
+
+    // Get the max size of the senders
+    int chunkSize = sendSize;
+    for (unsigned int i = 0; i < mpiSize; ++ i)
+    {
+        if(sizeArray[i] > chunkSize)
+        {
+            chunkSize = sizeArray[i];
+        }
+    }
+
+    printf("Max chunkSize = [%d]\n", chunkSize);
+
+    // Now we can new chunkSize * mpiSize recvbuffer
+
+    dataBuffer = new char[chunkSize * mpiSize];
+    MPI_Gather(const_cast<char *>(sendData->getSerializer().getPackedString()),
+               sendSize,
+               MPI_BYTE,
+               dataBuffer,
+               chunkSize,
+               MPI_BYTE,
+               ROOT_ID,
+               *mComm);
+
+    for(unsigned int i = 0; i < mpiSize; ++ i)
+    {
+        ISerializable* instance = data[i];
+        instance->getSerializerRef().setPackedString(dataBuffer, chunkSize * i);
+        instance->deserialize();
+    }
+
+    //delete dataBuffer;
+}
+
+void MpiConnection::gather(ISerializable* data)
+{
+    data->serialize();
+    int size = data->getSerializer().getSize();
+    const char *serializedData = data->getSerializer().getPackedString();
+
+    assert(size > 0);
+    MPI_Gather(&size, 1, MPI_INT, NULL, 0, MPI_INT, ROOT_ID, *mComm);
+    MPI_Gather(const_cast<char *>(serializedData), size, MPI_BYTE, NULL, 0, MPI_BYTE, ROOT_ID, *mComm);
 }
 
 

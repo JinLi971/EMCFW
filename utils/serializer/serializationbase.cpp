@@ -5,188 +5,189 @@
 
 void SerializationBase::operator <<(const std::string &value)
 {
-   std::string* cpyOfString = new std::string(value.c_str());
+    std::string* cpyOfString = new std::string(value.c_str());
 
-   SerializeContent *content = new SerializeContent();
-   content->length = (size_t)((cpyOfString->length() + 1) * sizeof(char));
-   content->content = const_cast<char *>(cpyOfString->c_str());
-   mPackedBytes.push_back(content);
+    SerializeContent *content = new SerializeContent();
+    content->length = (size_t)((cpyOfString->length() + 1) * sizeof(char));
+    content->content = const_cast<char *>(cpyOfString->c_str());
+    mPackedBytes.push_back(content);
 
-   mTotalLength += SIZE_T_LENGTH + content->length;
+    mTotalLength += SIZE_T_LENGTH + content->length;
 }
 
 void SerializationBase::operator >>(std::string &value)
 {
-   value.assign(mPackedBytes.front()->content);
+    value.assign(mPackedBytes.front()->content);
 
-   mTotalLength -= (SIZE_T_LENGTH + mPackedBytes.front()->length);
-   mPackedBytes.pop_front();
+    mTotalLength -= (SIZE_T_LENGTH + mPackedBytes.front()->length);
+    mPackedBytes.pop_front();
 }
 
 void SerializationBase::operator <<(const int &value)
 {
-   cpyValue<int>(&value);
+    cpyValue<int>(&value);
 }
 
 void SerializationBase::operator >>(int &value)
 {
-   getValue<int>(&value);
+    getValue<int>(&value);
 }
 
 void SerializationBase::operator <<(const float &value)
 {
-   cpyValue<float>(&value);
+    cpyValue<float>(&value);
 }
 
 void SerializationBase::operator >>(float &value)
 {
-   getValue<float>(&value);
+    getValue<float>(&value);
 }
 
 void SerializationBase::operator <<(const double &value)
 {
-   cpyValue<double>(&value);
+    cpyValue<double>(&value);
 }
 
 void SerializationBase::operator >>(double &value)
 {
-   getValue<double>(&value);
+    getValue<double>(&value);
 }
 
 void SerializationBase::operator <<(const unsigned long &value)
 {
-   cpyValue<unsigned long>(&value);
+    cpyValue<unsigned long>(&value);
 }
 
 void SerializationBase::operator >>(unsigned long &value)
 {
-   getValue<unsigned long>(&value);
+    getValue<unsigned long>(&value);
 }
 
 void SerializationBase::operator <<(const unsigned int &value)
 {
-   cpyValue<unsigned int>(&value);
+    cpyValue<unsigned int>(&value);
 }
 
 void SerializationBase::operator >>(unsigned int &value)
 {
-   getValue<unsigned int>(&value);
+    getValue<unsigned int>(&value);
 }
 
 void SerializationBase::operator <<(const GlobalClassId::ClassId &value)
 {
-   int tempValue = (int) value;
-   cpyValue<int>(&tempValue);
+    int tempValue = (int) value;
+    cpyValue<int>(&tempValue);
 }
 
 void SerializationBase::operator >>(GlobalClassId::ClassId &value)
 {
-   int tempValue = -1;
-   getValue<int>(&tempValue);
-   value =(GlobalClassId::ClassId) tempValue;
+    int tempValue = -1;
+    getValue<int>(&tempValue);
+    value =(GlobalClassId::ClassId) tempValue;
 }
 
 void SerializationBase::operator <<(const bool &value)
 {
-   cpyValue<bool>(&value);
+    cpyValue<bool>(&value);
 }
 
 void SerializationBase::operator >>(bool &value)
 {
-   getValue<bool>(&value);
+    getValue<bool>(&value);
 }
 
 void SerializationBase::operator <<(const char &value)
 {
-   cpyValue<char>(&value);
+    cpyValue<char>(&value);
 }
 
 void SerializationBase::operator >>(char &value)
 {
-   getValue<char>(&value);
+    getValue<char>(&value);
 }
 
 const char* SerializationBase::getPackedString() const
 {
-   char* packed = new char[mTotalLength + sizeof(mTotalLength)];
+    char* packed = new char[mTotalLength + sizeof(mTotalLength)];
 
-   memmove(&(packed[0]), &mTotalLength, sizeof(mTotalLength));
-   size_t currentPtr = sizeof(mTotalLength);
-   for(size_t i = 0; i < mPackedBytes.size(); i ++)
-   {
-      memmove(&(packed[currentPtr]), &(mPackedBytes.at(i)->length), SIZE_T_LENGTH);
-      memmove(&(packed[currentPtr]) + SIZE_T_LENGTH, mPackedBytes.at(i)->content, mPackedBytes.at(i)->length);
-      currentPtr += SIZE_T_LENGTH + mPackedBytes.at(i)->length;
-   }
+    memmove(&(packed[0]), &mTotalLength, sizeof(mTotalLength));
+    size_t currentPtr = sizeof(mTotalLength);
+    for(size_t i = 0; i < mPackedBytes.size(); i ++)
+    {
+        memmove(&(packed[currentPtr]), &(mPackedBytes.at(i)->length), SIZE_T_LENGTH);
+        memmove(&(packed[currentPtr]) + SIZE_T_LENGTH, mPackedBytes.at(i)->content, mPackedBytes.at(i)->length);
+        currentPtr += SIZE_T_LENGTH + mPackedBytes.at(i)->length;
+    }
 
-   assert(currentPtr == mTotalLength + sizeof(mTotalLength));
+    assert(currentPtr == mTotalLength + sizeof(mTotalLength));
 
-   return packed;
+    return packed;
 }
 
-void SerializationBase::setPackedString(const char *packedString)
+void SerializationBase::setPackedString(const char *packedString, int offset)
 {
-   mPackedBytes.clear();
-   mTotalLength = -1;
+    offset < 0 ? offset = 0 : offset;
+    mPackedBytes.clear();
+    mTotalLength = -1;
 
-   memmove(&mTotalLength, packedString, sizeof(mTotalLength));
+    memmove(&mTotalLength, packedString + offset, sizeof(mTotalLength));
 
-   size_t currentPtr = sizeof(mTotalLength);
+    size_t currentPtr = sizeof(mTotalLength) + offset;
 
-   while(currentPtr != mTotalLength + sizeof(mTotalLength))
-   {
-      SerializeContent * serializeContent = new SerializeContent();
-      memmove(&(serializeContent->length), &(packedString[currentPtr]), SIZE_T_LENGTH);
+    while(currentPtr != mTotalLength + sizeof(mTotalLength) + offset)
+    {
+        SerializeContent * serializeContent = new SerializeContent();
+        memmove(&(serializeContent->length), &(packedString[currentPtr]), SIZE_T_LENGTH);
 
-      char * payload = new char[serializeContent->length];
-      memmove(payload, &(packedString[currentPtr + SIZE_T_LENGTH]), serializeContent->length);
+        char * payload = new char[serializeContent->length];
+        memmove(payload, &(packedString[currentPtr + SIZE_T_LENGTH]), serializeContent->length);
 
-      serializeContent->content = payload;
+        serializeContent->content = payload;
 
-      mPackedBytes.push_back(serializeContent);
+        mPackedBytes.push_back(serializeContent);
 
-      currentPtr += SIZE_T_LENGTH + serializeContent->length;
-   }
+        currentPtr += SIZE_T_LENGTH + serializeContent->length;
+    }
 
-   assert(currentPtr == mTotalLength + sizeof(mTotalLength));
+    assert(currentPtr == mTotalLength + sizeof(mTotalLength) + offset);
 }
 
 
 int SerializationBase::getTotalLength() const
 {
-   return mTotalLength;
+    return mTotalLength;
 }
 
 void SerializationBase::clearContent()
 {
-   mTotalLength = 0;
+    mTotalLength = 0;
 
-   std::deque<SerializeContent *>::iterator iter = mPackedBytes.begin();
+    std::deque<SerializeContent *>::iterator iter = mPackedBytes.begin();
 
-   while(iter != mPackedBytes.end())
-   {
-      delete *iter;
-      iter ++;
-   }
+    while(iter != mPackedBytes.end())
+    {
+        delete *iter;
+        iter ++;
+    }
 
-   mPackedBytes.clear();
+    mPackedBytes.clear();
 
-   assert(mPackedBytes.size() == 0);
-   assert(mTotalLength == 0);
+    assert(mPackedBytes.size() == 0);
+    assert(mTotalLength == 0);
 }
 
 SerializationBase::SerializationBase()
-   : mTypeId(BASE_SERIALIZER),
-     SIZE_T_LENGTH(sizeof(size_t)),
-     mTotalLength(0)
+    : mTypeId(BASE_SERIALIZER),
+      SIZE_T_LENGTH(sizeof(size_t)),
+      mTotalLength(0)
 {
 
 }
 
 SerializationBase::SerializationBase(SerializerTypeId typeId)
-   : mTypeId(typeId),
-     SIZE_T_LENGTH(sizeof(size_t)),
-     mTotalLength(0)
+    : mTypeId(typeId),
+      SIZE_T_LENGTH(sizeof(size_t)),
+      mTotalLength(0)
 {
 
 }

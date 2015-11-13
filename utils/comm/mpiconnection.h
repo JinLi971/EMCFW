@@ -5,6 +5,7 @@
 #include <mpi.h>
 #include <time.h>
 #include <cstdlib>
+#include <vector>
 
 class MpiConnection : public IComm
 {
@@ -17,7 +18,8 @@ public:
    virtual void broadcast(ISerializable *data, int root);
    virtual void barrier();
    virtual void setCommunicator(void* communicator);
-
+   virtual void gather(std::vector<ISerializable *> &data, ISerializable *sendData, unsigned int mpiSize);
+   virtual void gather(ISerializable *data);
 private:
    void getRandomTag();
    int mRandomTag;

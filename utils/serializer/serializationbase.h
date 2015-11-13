@@ -81,7 +81,7 @@ public:
    }
 
    virtual const char *getPackedString() const;
-   virtual void setPackedString(const char* packedString);
+   virtual void setPackedString(const char* packedString, int offset = 0);
 
    virtual int getTotalLength() const;
    virtual int getHeadLength() const  { return sizeof(mTotalLength); }
