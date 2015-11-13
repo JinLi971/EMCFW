@@ -100,7 +100,6 @@ void TestMpiConnection::testGather()
     if(mTaskId == 0)
     {
         mConnection.setMode(IComm::GATHER_ROOT);
-        mAfterSend.setControlId(100);
         std::vector<ISerializable* > dataVector;
 
         for(int i = 0; i < mSize; ++ i)

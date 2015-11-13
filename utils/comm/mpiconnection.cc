@@ -135,7 +135,7 @@ void MpiConnection::gather(std::vector<ISerializable *>& data, ISerializable* se
         instance->deserialize();
     }
 
-    //delete dataBuffer;
+    delete dataBuffer;
 }
 
 void MpiConnection::gather(ISerializable* data)
