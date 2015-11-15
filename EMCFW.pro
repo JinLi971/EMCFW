@@ -67,7 +67,8 @@ HEADERS += \
     dataset/executor/MockContextAndResult.hh \
     executor/ExecutorManager.hh \
     dataset/executor/IContext.hh \
-    dataset/executor/IResult.hh
+    dataset/executor/IResult.hh \
+    executor/IExecutable.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi
@@ -91,4 +92,6 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+OTHER_FILES +=
 

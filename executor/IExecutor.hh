@@ -22,10 +22,16 @@ using namespace DataSet::Executor;
 class IExecutor
 {
 public:
-    typedef void (* CallBackFunPtr)(IExecutor*);
-    typedef void (* NotifyState)(Executor::ExecutionState);
+    virtual ~IExecutor() {}
+    typedef void (* NotifyState)(Executor::ExecutionState,
+                                 IExecutor*,
+                                 void*);
 
 public:
+    virtual void resetToInit() {
+        mExecState = Executor::INIT;
+    }
+
     virtual bool init() = 0;
     virtual bool start() = 0;
     virtual Executor::ExecutionState getExecutionState() {
@@ -37,22 +43,25 @@ public:
     virtual void setContext(const IContext& context) = 0;
     virtual IResult getResult() = 0;
 
-    virtual void setNotifyHandler(NotifyState handler) {
+    virtual void setNotifyHandler(NotifyState funPtr, void* handler) {
         mStateHandler = handler;
+        mStateFunPtr = funPtr;
     }
 
-    virtual NotifyState getNotifyHanlder() {
-        return mStateHandler;
+    virtual NotifyState getNotifyHanlder(void* handler) {
+        handler = mStateHandler;
+        return mStateFunPtr;
     }
 
 protected:
     virtual void fireStateChange() {
-        (*mStateHandler)(mExecState);
+        (*mStateFunPtr)(mExecState, this, mStateHandler);
     }
 
 protected:
     Executor::ExecutionState mExecState;
-    NotifyState mStateHandler;
+    NotifyState mStateFunPtr;
+    void* mStateHandler;
 };
 
 #endif // IEXECUTOR_HH
