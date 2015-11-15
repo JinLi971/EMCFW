@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     dataset/executor/cuda/CudaResult.cc \
     executor/MockExecutor.cc \
     dataset/executor/MockContextAndResult.cc \
-    executor/ExecutorManager.cc
+    executor/ExecutorManager.cc \
+    executor/ExecutorFactory.cc
 
 
 HEADERS += \
@@ -68,7 +69,8 @@ HEADERS += \
     executor/ExecutorManager.hh \
     dataset/executor/IContext.hh \
     dataset/executor/IResult.hh \
-    executor/IExecutable.hh
+    executor/IExecutable.hh \
+    executor/ExecutorFactory.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi
