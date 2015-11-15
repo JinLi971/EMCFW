@@ -25,7 +25,14 @@ SOURCES += main.cpp \
     utils/serializer/SpImageSerializer.cpp \
     node/master/SlaveAgent.cc \
     utils/comm/mpiconnection.cc \
-    node/slave/SlaveNode.cc
+    node/slave/SlaveNode.cc \
+    executor/cuda/CudaExecutor.cc \
+    dataset/executor/cuda/CudaContext.cc \
+    dataset/executor/cuda/CudaResult.cc \
+    executor/MockExecutor.cc \
+    dataset/executor/MockContextAndResult.cc \
+    executor/ExecutorManager.cc
+
 
 HEADERS += \
     node/NodeConstants.hh \
@@ -51,7 +58,14 @@ HEADERS += \
     node/master/dispatcher/Dispatcher.hh \
     node/master/dispatcher/DispatcherFactory.h \
     node/slave/SlaveNode.hh \
-    dataset/Constants.hh
+    dataset/Constants.hh \
+    executor/IExecutor.hh \
+    executor/cuda/CudaExecutor.hh \
+    dataset/executor/cuda/CudaContext.hh \
+    dataset/executor/cuda/CudaResult.hh \
+    executor/MockExecutor.hh \
+    dataset/executor/MockContextAndResult.hh \
+    executor/ExecutorManager.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi

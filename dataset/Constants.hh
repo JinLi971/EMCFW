@@ -4,6 +4,7 @@
 namespace DataSet {
 
 static const int ROOT_ID = 0;
+static const unsigned int RETRY_LIMIT = 5;
 
 }
 
