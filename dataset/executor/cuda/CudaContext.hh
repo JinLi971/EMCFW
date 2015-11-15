@@ -1,6 +1,8 @@
 #ifndef CUDACONTEXT_HH
 #define CUDACONTEXT_HH
 
+#include "dataset/executor/IContext.hh"
+
 namespace DataSet
 {
 namespace Executor
@@ -8,7 +10,7 @@ namespace Executor
 namespace Cuda
 {
 
-class CudaContext
+class CudaContext : public IContext
 {
 public:
     CudaContext();

@@ -12,7 +12,7 @@ namespace Executor
 namespace Cuda
 {
 
-class CudaExecutor : public IExecutor<CudaContext, CudaResult>
+class CudaExecutor : public IExecutor
 {
 public:
     CudaExecutor();
@@ -23,7 +23,7 @@ public:
     virtual bool start();
     virtual void abort();
     virtual void setContext(const CudaContext &context);
-    virtual CudaResult getResult();
+    virtual IResult getResult();
 };
 
 }

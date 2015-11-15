@@ -1,7 +1,6 @@
 #include "ExecutorManager.hh"
 #include "dataset/Constants.hh"
 
-
 namespace Executor
 {
 
@@ -19,7 +18,7 @@ void ExecutorManager::destory()
         while(iter != mList.end())
         {
             (*iter)->abort();
-            if((*iter)->getExecutionState() == IExecutor::STOPPED)
+            if((*iter)->getExecutionState() == STOPPED)
             {
                 iter = mList.erase(iter);
                 continue;
@@ -43,10 +42,38 @@ void ExecutorManager::destory()
     mList.erase(mList.begin(), mList.end());
 }
 
+
 void ExecutorManager::addExecutor(IExecutor* instance)
 {
+    instance->setNotifyHandler(&ExecutorManager::handleExecutorStateChange);
     mList.push_back(instance);
 }
+
+void ExecutorManager::handleExecutorStateChange(ExecutionState state)
+{
+
+}
+
+bool ExecutorManager::getExecutor(IExecutor::CallBackFunPtr callBackPtr)
+{
+    mMutex.lock();
+    for(int i = 0; i < mList.size(); ++ i)
+    {
+        if(mList[i]->getExecutionState() == IDLE)
+        {
+            callBackPtr(mList[i]);
+            return true;
+        }
+    }
+
+    // No executor available for now
+    // Put into waiting queue
+    mRequestQueue.push(callBackPtr);
+
+    mMutex.unlock();
+}
+
+
 
 
 }

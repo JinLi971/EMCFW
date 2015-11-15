@@ -12,7 +12,7 @@ namespace Executor
 namespace Mock
 {
 
-class MockExecutor : public IExecutor<MockContext, MockResult>
+class MockExecutor : public IExecutor
 {
 public:
     MockExecutor();
@@ -23,7 +23,7 @@ public:
     virtual bool start();
     virtual void abort();
     virtual void setContext(const MockContext &context);
-    virtual MockResult getResult();
+    virtual IResult getResult();
 
 public:
     void setState(ExecutionState state);

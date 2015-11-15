@@ -8,7 +8,7 @@ namespace Cuda
 
 CudaExecutor::CudaExecutor()
 {
-    mExecState = NONE;
+    mExecState = IDLE;
 }
 
 bool CudaExecutor::init()

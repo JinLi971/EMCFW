@@ -1,6 +1,8 @@
 #ifndef CUDARESULT_HH
 #define CUDARESULT_HH
 
+#include "dataset/executor/IResult.hh"
+
 namespace DataSet
 {
 namespace Executor
@@ -8,8 +10,7 @@ namespace Executor
 namespace Cuda
 {
 
-
-class CudaResult
+class CudaResult : public IResult
 {
 public:
     CudaResult();

@@ -36,7 +36,7 @@ void MockExecutor::setContext(const MockContext &context)
     mContext = context;
 }
 
-MockResult MockExecutor::getResult()
+IResult MockExecutor::getResult()
 {
     return mResult;
 }
@@ -47,7 +47,7 @@ void MockExecutor::setResult(MockResult result)
 }
 
 
-void MockExecutor::setState(IExecutor::ExecutionState state)
+void MockExecutor::setState(Executor::ExecutionState state)
 {
     mExecState = state;
 }

@@ -65,15 +65,25 @@ HEADERS += \
     dataset/executor/cuda/CudaResult.hh \
     executor/MockExecutor.hh \
     dataset/executor/MockContextAndResult.hh \
-    executor/ExecutorManager.hh
+    executor/ExecutorManager.hh \
+    dataset/executor/IContext.hh \
+    dataset/executor/IResult.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi
 LIBS += -L/usr/lib/x86_64-linux-gnu -lconfig++
 
+LIBS += -L/home/exuugag/devApp/openmpi/lib -lmpi
+LIBS += -L/home/exuugag/devApp/libconfig/lib -lconfig++
+
+
 INCLUDEPATH += /usr/local/include/spimage \
     /usr/local/include \
-   /usr/include/mpi/
+    /usr/include/mpi/ \
+    /home/exuugag/devApp/openmpi/include \
+    /home/exuugag/Jing/libspimage/libspimage/include \
+    /home/exuugag/devApp/libconfig/include
+
 DEPENDPATH += /usr/local/include/spimage \
    /usr/local/include
 
