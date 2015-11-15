@@ -13,6 +13,10 @@ class MockContext : public IContext
 {
 public:
     MockContext();
+
+    // IContext interface
+public:
+    virtual ContextType getType();
 };
 
 class MockResult : public IResult

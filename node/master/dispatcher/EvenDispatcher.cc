@@ -33,6 +33,7 @@ void EvenDispatcher::apply()
                         mConf.dataStartIndex,
                         mConf.dataEndIndex,
                         mMasterNode.getTaskId(),
+                        DataSet::Executor::CUDA,
                         nodeCluster);
 
     for (int i = 0; i < mSlaveList.size(); ++ i)

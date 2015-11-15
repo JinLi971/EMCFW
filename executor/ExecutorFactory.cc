@@ -10,7 +10,7 @@ ExecutorFactory::ExecutorFactory()
 }
 
 
-IExecutor *ExecutorFactory::getExecutor(Executor::ExecutorType type)
+IExecutor *ExecutorFactory::getExecutor(DataSet::Executor::ExecutorType type)
 {
     switch(type)
     {
@@ -19,7 +19,7 @@ IExecutor *ExecutorFactory::getExecutor(Executor::ExecutorType type)
             return new Cuda::CudaExecutor();
         }
         default:
-            return NULL;
+            return 0;
     }
 }
 

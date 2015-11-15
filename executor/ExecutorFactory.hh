@@ -1,23 +1,19 @@
 #ifndef EXECUTORFACTORY_HH
 #define EXECUTORFACTORY_HH
 
+#include "dataset/executor/ExecutorType.hh"
+
 class IExecutor;
 
 namespace Executor
 {
-
-enum ExecutorType
-{
-    NONE = -1,
-    CUDA = 0
-};
 
 class ExecutorFactory
 {
 public:
     ExecutorFactory();
 
-    static IExecutor *getExecutor(ExecutorType type);
+    static IExecutor *getExecutor(DataSet::Executor::ExecutorType type);
 };
 
 }

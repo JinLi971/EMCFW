@@ -22,8 +22,10 @@ public:
     virtual bool init();
     virtual bool start();
     virtual void abort();
-    virtual void setContext(const CudaContext &context);
+    virtual void setContext(const IContext &context);
     virtual IResult getResult();
+
+    // IExecutor interface
 };
 
 }

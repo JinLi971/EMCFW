@@ -31,9 +31,9 @@ void MockExecutor::abort()
     mExecState = STOPPED;
 }
 
-void MockExecutor::setContext(const MockContext &context)
+void MockExecutor::setContext(const IContext &context)
 {
-    mContext = context;
+    mContext = *(dynamic_cast<const MockContext *>(&context));
 }
 
 IResult MockExecutor::getResult()

@@ -70,7 +70,8 @@ HEADERS += \
     dataset/executor/IContext.hh \
     dataset/executor/IResult.hh \
     executor/IExecutable.hh \
-    executor/ExecutorFactory.hh
+    executor/ExecutorFactory.hh \
+    dataset/executor/ExecutorType.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi

@@ -22,7 +22,7 @@ public:
     virtual bool init();
     virtual bool start();
     virtual void abort();
-    virtual void setContext(const MockContext &context);
+    virtual void setContext(const IContext &context);
     virtual IResult getResult();
 
 public:

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "utils/serializer/ISerializable.hh"
+#include "dataset/executor/ExecutorType.hh"
 
 namespace DataSet
 {
@@ -16,7 +17,7 @@ public:
     LoadSpec(const std::string& configFilePath,
                int startIndex,
                int endIndex,
-               const int controlId,
+               const int controlId, const Executor::ExecutorType execType,
                const std::vector<int>& nodeCluster);
 
     LoadSpec();
@@ -41,6 +42,7 @@ protected:
     int mStartIndex;
     int mEndIndex;
     int mControlId;
+    Executor::ExecutorType mExecutorType;
     std::vector<int> mNodeCluster;
 
 
