@@ -1,6 +1,7 @@
 #include "SlaveNode.hh"
 #include <assert.h>
 #include "dataset/Constants.hh"
+#include "executor/ExecutorFactory.hh"
 
 namespace Node
 {
@@ -44,11 +45,30 @@ void SlaveNode::dispatchJob()
 
 void SlaveNode::init()
 {
-
+    // Do nothing until receive the acutal loadSpec
 }
 
 void SlaveNode::loadData()
 {
+    assert(!mLoadSpec.getConfigFilePath().empty());
+    assert(mLoadSpec.getControlId() != -1);
+
+    IExecutor* executor = Executor::ExecutorFactory::getExecutor(mLoadSpec.getExecutorType());
+    assert(executor);
+
+    Executor::ExecutorManager::getInstance()->addExecutor(executor);
+}
+
+bool SlaveNode::readyExecutor(IExecutor *instance)
+{
+    // We have a read-to-go executor
+
+    // If it is not we want... forget about it.
+    if(instance->getType() != mLoadSpec.getExecutorType())
+        return false;
+
+
+
 
 }
 

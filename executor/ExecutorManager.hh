@@ -4,7 +4,7 @@
 #include "IExecutor.hh"
 
 #include <vector>
-#include <queue>
+#include <list>
 #include <mutex>
 
 namespace Executor
@@ -15,7 +15,9 @@ class IExecutable;
 class ExecutorManager
 {
 public:
-    ExecutorManager();
+    static ExecutorManager *getInstance();
+    ~ExecutorManager();
+
     void destory();
     void addExecutor(IExecutor *instance);
     bool getExecutor(IExecutable* callBackInstance);
@@ -30,9 +32,13 @@ protected:
 
 private:
     std::vector<IExecutor*> mList;
-    std::queue<IExecutable*> mRequestQueue;
+    std::list<IExecutable*> mRequestQueue;
     std::mutex mMutex;
     std::mutex mDispatchMutex;
+    ExecutorManager* instance;
+
+private:
+    ExecutorManager();
 };
 
 }

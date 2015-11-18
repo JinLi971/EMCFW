@@ -24,6 +24,7 @@ public:
     virtual void abort();
     virtual void setContext(const IContext &context);
     virtual IResult* getResult();
+    virtual ExecutorType getType();
 
     // IExecutor interface
 };

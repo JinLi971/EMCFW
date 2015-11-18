@@ -38,6 +38,11 @@ IResult *CudaExecutor::getResult()
 
 }
 
+ExecutorType CudaExecutor::getType()
+{
+    return CUDA;
+}
+
 
 
 }

@@ -53,6 +53,8 @@ public:
         return mStateFunPtr;
     }
 
+    virtual ExecutorType getType() = 0;
+
 protected:
     virtual void fireStateChange() {
         (*mStateFunPtr)(mExecState, this, mStateHandler);

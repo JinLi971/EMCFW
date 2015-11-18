@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "../../../dataset/control/LoadSpec.hh"
 #include "../../../node/master/MasterConf.hh"
+#include "../../../dataset/executor/ExecutorType.hh"
 
 TestSerialization::TestSerialization()
 {
@@ -26,6 +27,7 @@ TEST(TestSerialization, testLoadSpec)
     before.setControlId(1);
     before.setStartIndex(1);
     before.setEndIndex(100);
+    before.setExecutorType(DataSet::Executor::MOCK);
     before.getNodeClusterRef().push_back(0);
     before.getNodeClusterRef().push_back(1);
     before.getNodeClusterRef().push_back(2);
@@ -42,6 +44,7 @@ TEST(TestSerialization, testLoadSpec)
     EXPECT_EQ (before.getControlId(), after.getControlId());
     EXPECT_EQ (before.getStartIndex(), after.getStartIndex());
     EXPECT_EQ (before.getEndIndex(), after.getEndIndex());
+    EXPECT_EQ (before.getExecutorType(), after.getExecutorType());
     EXPECT_EQ (before.getNodeCluster().size(), after.getNodeCluster().size());
     EXPECT_EQ (before.getNodeCluster()[0], after.getNodeCluster()[0]);
     EXPECT_EQ (before.getNodeCluster()[1], after.getNodeCluster()[1]);

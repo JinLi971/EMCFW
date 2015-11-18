@@ -17,7 +17,8 @@ public:
     LoadSpec(const std::string& configFilePath,
                int startIndex,
                int endIndex,
-               const int controlId, const Executor::ExecutorType execType,
+               const int controlId,
+               const Executor::ExecutorType execType,
                const std::vector<int>& nodeCluster);
 
     LoadSpec();
@@ -36,6 +37,9 @@ public:
 
     const std::vector<int>& getNodeCluster() { return mNodeCluster; }
     std::vector<int>& getNodeClusterRef() { return mNodeCluster; }
+
+    void setExecutorType(Executor::ExecutorType type) { mExecutorType = type; }
+    Executor::ExecutorType getExecutorType() { return mExecutorType; }
 
 protected:
     std::string mConfigFilePath;

@@ -41,6 +41,11 @@ IResult *MockExecutor::getResult()
     return &mResult;
 }
 
+ExecutorType MockExecutor::getType()
+{
+    return MOCK;
+}
+
 void MockExecutor::setResult(MockResult result)
 {
     mResult = result;

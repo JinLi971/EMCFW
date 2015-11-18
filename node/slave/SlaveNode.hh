@@ -3,13 +3,15 @@
 
 #include "node/INode.hh"
 #include "utils/comm/mpiconnection.h"
+#include "executor/ExecutorManager.hh"
+#include "executor/IExecutable.hh"
 
 namespace Node
 {
 namespace Slave
 {
 
-class SlaveNode : public INode
+class SlaveNode : public INode, Executor::IExecutable
 {
 public:
     SlaveNode(int taskId);
@@ -27,8 +29,11 @@ public:
 protected:
     int mTaskId;
     DataSet::Control::LoadSpec mLoadSpec;
-
     MpiConnection mConnection;
+
+    // IExecutable interface
+public:
+    virtual bool readyExecutor(IExecutor *instance);
 };
 
 }

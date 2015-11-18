@@ -9,6 +9,26 @@ ExecutorManager::ExecutorManager()
 {
 }
 
+ExecutorManager::~ExecutorManager()
+{
+
+}
+
+ExecutorManager *ExecutorManager::getInstance()
+{
+    if(instance)
+        return instance;
+
+    instance = new ExecutorManager();
+    return instance;
+}
+
+void ExecutorManager::destoryManager()
+{
+    destory();
+    instance->~ExecutorManger();
+}
+
 void ExecutorManager::destory()
 {
     unsigned int retryTimes = 0;
@@ -81,29 +101,68 @@ void ExecutorManager::dispatchJob(IExecutor* instance)
 
     mDispatchMutex.lock();
 
-    IExecutable* callback = mRequestQueue.front();
-    callback->readyExecutor(instance);
-    mRequestQueue.pop();
+    std::list<IExecutable*>::iterator iter = mRequestQueue.begin();
+
+    while(iter != mRequestQueue.end())
+    {
+        IExecutable* callback = *iter;
+
+        if(callback->getRequiredExecutorType() == instance->getType())
+        {
+            // match the type of calling
+            if(callback->readyExecutor(instance))
+            {
+                mRequestQueue.erase(iter);
+                mDispatchMutex.unlock();
+                return;
+            }
+        }
+
+        ++iter;
+    }
 
     mDispatchMutex.unlock();
 }
 
 bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
 {
+    std::list<IExecutable*>::iterator iter = mRequestQueue.begin();
+
+    while(iter != mRequestQueue.end())
+    {
+        IExecutable* waitingEle = *iter;
+        if(waitingEle->getRequiredExecutorType() == callBackInstance->getRequiredExecutorType())
+        {
+            mMutex.lock();
+            mRequestQueue.push_back(callBackInstance);
+            mMutex.unlock();
+            return;
+        }
+
+        ++ iter;
+    }
+
     mMutex.lock();
+
     for(unsigned int i = 0; i < mList.size(); ++ i)
     {
+        if(mList[i]->getType() != callBackInstance->getRequiredExecutorType())
+            continue;
+
         ExecutionState state = mList[i]->getExecutionState();
         if(state == IDLE || state == ERROR || state == STOPPED)
         {
-            callBackInstance->readyExecutor(mList[i]);
-            return true;
+            if(callBackInstance->readyExecutor(mList[i]))
+            {
+                mMutex.unlock();
+                return true;
+            }
         }
     }
 
     // No executor available for now
     // Put into waiting queue
-    mRequestQueue.push(callBackInstance);
+    mRequestQueue.push_back(callBackInstance);
 
     mMutex.unlock();
 
