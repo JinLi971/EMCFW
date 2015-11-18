@@ -9,19 +9,22 @@ namespace Executor
 enum ExecutorType
 {
     NONE = -1,
-    CUDA = 0
+    MOCK = 0,
+    CUDA
 };
 
 enum ContextType
 {
     NO_CONTEXT = -1,
-    CUDA_CONTEXT = 0
+    MOCK_CONTEXT = 0,
+    CUDA_CONTEXT
 };
 
 enum ResultType
 {
     NO_RESULT = -1,
-    CUDA_RESULT = 0
+    MOCK_RESULT = 0,
+    CUDA_RESULT
 };
 
 }

@@ -41,7 +41,7 @@ public:
     virtual void abort() = 0;
 
     virtual void setContext(const IContext& context) = 0;
-    virtual IResult getResult() = 0;
+    virtual IResult* getResult() = 0;
 
     virtual void setNotifyHandler(NotifyState funPtr, void* handler) {
         mStateHandler = handler;

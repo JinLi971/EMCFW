@@ -14,6 +14,10 @@ class CudaResult : public IResult
 {
 public:
     CudaResult();
+
+    // IResult interface
+public:
+    virtual ResultType getType();
 };
 
 

@@ -23,7 +23,7 @@ public:
     virtual bool start();
     virtual void abort();
     virtual void setContext(const IContext &context);
-    virtual IResult getResult();
+    virtual IResult* getResult();
 
 public:
     void setState(ExecutionState state);

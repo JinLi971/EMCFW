@@ -8,7 +8,7 @@ namespace Executor
 class IExecutable
 {
 public:
-    void readyExecutor(IExecutor* instance);
+    virtual void readyExecutor(IExecutor* instance) = 0;
 };
 }
 #endif // IEXECUTABLE_H

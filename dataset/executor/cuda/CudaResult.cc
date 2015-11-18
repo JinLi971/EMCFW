@@ -13,6 +13,11 @@ CudaResult::CudaResult()
 {
 }
 
+ResultType CudaResult::getType()
+{
+    return CUDA_RESULT;
+}
+
 }
 }
 }

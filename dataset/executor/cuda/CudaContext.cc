@@ -11,6 +11,11 @@ CudaContext::CudaContext()
 {
 }
 
+ContextType CudaContext::getType()
+{
+    return CUDA_CONTEXT;
+}
+
 
 }
 }

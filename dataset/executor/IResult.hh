@@ -1,6 +1,7 @@
 #ifndef IRESULT_H
 #define IRESULT_H
 
+#include "ExecutorType.hh"
 
 namespace DataSet
 {
@@ -11,6 +12,8 @@ class IResult
 {
 public:
     virtual ~IResult() {}
+
+    virtual ResultType getType() = 0;
 };
 
 }

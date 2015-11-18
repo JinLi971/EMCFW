@@ -28,6 +28,16 @@ void CudaExecutor::abort()
     mExecState = STOPPED;
 }
 
+void CudaExecutor::setContext(const IContext &context)
+{
+
+}
+
+IResult *CudaExecutor::getResult()
+{
+
+}
+
 
 
 }

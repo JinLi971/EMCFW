@@ -23,6 +23,10 @@ class MockResult : public IResult
 {
 public:
     MockResult();
+
+    // IResult interface
+public:
+    virtual ResultType getType();
 };
 
 }

@@ -36,9 +36,9 @@ void MockExecutor::setContext(const IContext &context)
     mContext = *(dynamic_cast<const MockContext *>(&context));
 }
 
-IResult MockExecutor::getResult()
+IResult *MockExecutor::getResult()
 {
-    return mResult;
+    return &mResult;
 }
 
 void MockExecutor::setResult(MockResult result)

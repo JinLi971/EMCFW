@@ -14,6 +14,10 @@ class CudaContext : public IContext
 {
 public:
     CudaContext();
+
+    // IContext interface
+public:
+    virtual ContextType getType();
 };
 
 }
