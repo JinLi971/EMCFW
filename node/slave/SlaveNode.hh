@@ -6,6 +6,11 @@
 #include "executor/ExecutorManager.hh"
 #include "executor/IExecutable.hh"
 
+#include "dataset/executor/IContext.hh"
+#include "dataset/executor/IResult.hh"
+
+#include <memory>
+
 namespace Node
 {
 namespace Slave
@@ -26,14 +31,27 @@ public:
     virtual void init();
     virtual void loadData();
 
+public:
+    virtual void setContext(DataSet::Executor::IContext *ctx);
+    virtual const IContext::ContextPtr &getContext() const;
+    virtual IContext::ContextPtr &getContextRef();
+
+    virtual void setResult(IResult *result);
+    virtual const IResult::ResultPtr &getResult() const;
+    virtual IResult::ResultPtr &getResultRef();
+
 protected:
     int mTaskId;
     DataSet::Control::LoadSpec mLoadSpec;
     MpiConnection mConnection;
+    DataSet::Executor::IContext::ContextPtr mContext;
+    DataSet::Executor::IResult::ResultPtr mResult;
 
     // IExecutable interface
 public:
     virtual bool readyExecutor(IExecutor *instance);
+    virtual ExecutorType getRequiredExecutorType();
+
 };
 
 }

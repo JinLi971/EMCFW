@@ -28,12 +28,12 @@ void CudaExecutor::abort()
     mExecState = STOPPED;
 }
 
-void CudaExecutor::setContext(const IContext &context)
+void CudaExecutor::setContext(const IContext::ContextPtr &context)
 {
 
 }
 
-IResult *CudaExecutor::getResult()
+IResult::ResultPtr CudaExecutor::getResult()
 {
 
 }
@@ -41,6 +41,11 @@ IResult *CudaExecutor::getResult()
 ExecutorType CudaExecutor::getType()
 {
     return CUDA;
+}
+
+void CudaExecutor::setResult(IResult::ResultPtr &result)
+{
+
 }
 
 

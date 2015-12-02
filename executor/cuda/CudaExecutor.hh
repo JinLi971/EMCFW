@@ -22,11 +22,10 @@ public:
     virtual bool init();
     virtual bool start();
     virtual void abort();
-    virtual void setContext(const IContext &context);
-    virtual IResult* getResult();
+    virtual void setContext(const IContext::ContextPtr &context);
+    virtual IResult::ResultPtr getResult();
     virtual ExecutorType getType();
-
-    // IExecutor interface
+    virtual void setResult(IResult::ResultPtr &result);
 };
 
 }

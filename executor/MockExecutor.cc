@@ -31,14 +31,14 @@ void MockExecutor::abort()
     mExecState = STOPPED;
 }
 
-void MockExecutor::setContext(const IContext &context)
+void MockExecutor::setContext(const IContext::ContextPtr &context)
 {
-    mContext = *(dynamic_cast<const MockContext *>(&context));
+    mContext = *(static_cast<const MockContext *>(context.get()));
 }
 
-IResult *MockExecutor::getResult()
+IResult::ResultPtr MockExecutor::getResult()
 {
-    return &mResult;
+    return std::make_shared<MockResult>(mResult);
 }
 
 ExecutorType MockExecutor::getType()
@@ -46,9 +46,9 @@ ExecutorType MockExecutor::getType()
     return MOCK;
 }
 
-void MockExecutor::setResult(MockResult result)
+void MockExecutor::setResult(IResult::ResultPtr &result)
 {
-    mResult = result;
+    mResult = *(dynamic_cast<MockResult *>(result.get()));
 }
 
 

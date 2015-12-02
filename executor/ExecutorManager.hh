@@ -18,7 +18,7 @@ public:
     static ExecutorManager *getInstance();
     ~ExecutorManager();
 
-    void destory();
+    void destoryManager();
     void addExecutor(IExecutor *instance);
     bool getExecutor(IExecutable* callBackInstance);
 
@@ -26,6 +26,7 @@ public:
     static void handleExecutorStateChange(ExecutionState state,
                                           IExecutor *instance,
                                           void* handler);
+
 
 protected:
     void dispatchJob(IExecutor *instance);
@@ -35,10 +36,11 @@ private:
     std::list<IExecutable*> mRequestQueue;
     std::mutex mMutex;
     std::mutex mDispatchMutex;
-    ExecutorManager* instance;
+    static ExecutorManager* instance;
 
 private:
     ExecutorManager();
+    void destory();
 };
 
 }

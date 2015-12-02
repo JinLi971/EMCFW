@@ -59,6 +59,41 @@ void SlaveNode::loadData()
     Executor::ExecutorManager::getInstance()->addExecutor(executor);
 }
 
+void SlaveNode::setContext(IContext *ctx)
+{
+    mContext.reset(ctx);
+}
+
+const IContext::ContextPtr &SlaveNode::getContext() const
+{
+    return mContext;
+}
+
+IContext::ContextPtr &SlaveNode::getContextRef()
+{
+    return mContext;
+}
+
+void SlaveNode::setResult(IResult *result)
+{
+    mResult.reset(result);
+}
+
+const IResult::ResultPtr &SlaveNode::getResult() const
+{
+    return mResult;
+}
+
+IResult::ResultPtr &SlaveNode::getResultRef()
+{
+    return mResult;
+}
+
+ExecutorType SlaveNode::getRequiredExecutorType()
+{
+    return mLoadSpec.getExecutorType();
+}
+
 bool SlaveNode::readyExecutor(IExecutor *instance)
 {
     // We have a read-to-go executor
@@ -67,10 +102,14 @@ bool SlaveNode::readyExecutor(IExecutor *instance)
     if(instance->getType() != mLoadSpec.getExecutorType())
         return false;
 
-
-
+    instance->setContext(mContext);
+    instance->setResult(mResult);
+    instance->init();
+    instance->start();
 
 }
+
+
 
 }
 }

@@ -22,14 +22,15 @@ public:
     virtual bool init();
     virtual bool start();
     virtual void abort();
-    virtual void setContext(const IContext &context);
-    virtual IResult* getResult();
+    virtual void setContext(const IContext::ContextPtr &context);
+    virtual IResult::ResultPtr getResult();
+    virtual void setResult(IResult::ResultPtr &result);
     virtual ExecutorType getType();
 
 public:
     void setState(ExecutionState state);
     void setReturnVal(bool value);
-    void setResult(MockResult result);
+
 
 private:
     bool mReturnVal;

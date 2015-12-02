@@ -26,7 +26,7 @@ ExecutorManager *ExecutorManager::getInstance()
 void ExecutorManager::destoryManager()
 {
     destory();
-    instance->~ExecutorManger();
+    (*instance).~ExecutorManager();
 }
 
 void ExecutorManager::destory()
@@ -136,7 +136,7 @@ bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
             mMutex.lock();
             mRequestQueue.push_back(callBackInstance);
             mMutex.unlock();
-            return;
+            return true;
         }
 
         ++ iter;
