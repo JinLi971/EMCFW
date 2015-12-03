@@ -27,6 +27,9 @@ public:
 
     virtual void init() = 0;
     virtual void loadData() = 0;
+    virtual void start() = 0;
+    virtual void stop(int taskId = -1) = 0;
+    virtual bool destory() = 0;
 
 };
 

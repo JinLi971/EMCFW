@@ -104,9 +104,20 @@ bool SlaveNode::readyExecutor(IExecutor *instance)
 
     instance->setContext(mContext);
     instance->setResult(mResult);
-    instance->init();
-    instance->start();
 
+    try
+    {
+        instance->init();
+    } catch (const std::exception& e) {
+        fprintf(stderr,
+                "Executor [%d] throws exception [%d]: [%s]\n",
+                instance->getType(),
+                DataSet::EXECUTOR_INIT_EXCEPTION,
+                e.what());
+        exit(1);
+    }
+
+    return true;
 }
 
 

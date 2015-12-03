@@ -22,6 +22,9 @@ public:
     virtual void dispatchJob();
     virtual const DataSet::Control::LoadSpec &getLoadSpec();
     virtual void setLoadSpec(const DataSet::Control::LoadSpec &loadSpec);
+    virtual void start();
+    virtual void stop(int taskId);
+    virtual bool destory();
 
 private:
     void loadMasterConf();
@@ -31,6 +34,7 @@ private:
     MasterConf mConf;
     std::vector<INode *> mSlaveList;
     DataSet::Control::LoadSpec mEmptyLoadSpec;
+
 };
 
 } //Master NS

@@ -4,6 +4,8 @@
 #include "dispatcher/Dispatcher.hh"
 #include "dispatcher/DispatcherFactory.h"
 
+#include <memory>
+
 namespace Node
 {
 namespace Master
@@ -33,10 +35,10 @@ void MasterNode::init()
 void MasterNode::dispatchJob()
 {
     // Apply different job dispatch strategies.
-    Dispatcher::IDispatcher *dispatcher = Dispatcher::DispatcherFactory::getDispatcher(Dispatcher::DispatcherFactory::EVEN,
-                                                                         mConf,
-                                                                         mSlaveList,
-                                                                         *this);
+    std::unique_ptr<Dispatcher::IDispatcher> dispatcher(Dispatcher::DispatcherFactory::getDispatcher(Dispatcher::DispatcherFactory::EVEN,
+                                                                                                     mConf,
+                                                                                                     mSlaveList,
+                                                                                                     *this));
     dispatcher->apply();
 
     // Now dispatch all jobs to the slaves
@@ -55,6 +57,11 @@ const DataSet::Control::LoadSpec &MasterNode::getLoadSpec()
 void MasterNode::setLoadSpec(const DataSet::Control::LoadSpec &/*loadSpec*/)
 {
     // Do nothing
+}
+
+void MasterNode::start()
+{
+
 }
 
 void MasterNode::loadData()

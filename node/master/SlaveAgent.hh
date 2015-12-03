@@ -25,10 +25,14 @@ public:
     virtual void init();
     virtual void dispatchJob();
     virtual void loadData();
+    virtual void start();
+    virtual void stop(int taskId);
+    virtual bool destory();
 
 protected:
     int mTaskId;
     DataSet::Control::LoadSpec mLoadSpec;
+
 };
 
 }

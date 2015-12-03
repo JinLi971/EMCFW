@@ -30,6 +30,9 @@ public:
     virtual void dispatchJob();
     virtual void init();
     virtual void loadData();
+    virtual void start();
+    virtual void stop(int taskId);
+    virtual bool destory();
 
 public:
     virtual void setContext(DataSet::Executor::IContext *ctx);

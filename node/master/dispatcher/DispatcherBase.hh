@@ -17,6 +17,7 @@ public:
     DispatcherBase(const MasterConf& conf,
                    const std::vector<INode *>& slaveList,
                    const INode& masterNode);
+    virtual ~DispatcherBase();
 
     /**
      * @brief apply Apply the strategy of dispatcher

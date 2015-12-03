@@ -9,8 +9,7 @@ namespace Executor
     enum ExecutionState
     {
         IDLE = -1,
-        INIT = 0,
-        WAITING,
+        WAITING = 0,
         RUNNING,
         ERROR,
         STOPPED
@@ -28,8 +27,8 @@ public:
                                  void*);
 
 public:
-    virtual void resetToInit() {
-        mExecState = Executor::INIT;
+    virtual void resetToIdle() {
+        mExecState = Executor::IDLE;
     }
 
     virtual bool init() = 0;
