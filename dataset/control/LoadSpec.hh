@@ -41,11 +41,15 @@ public:
     void setExecutorType(Executor::ExecutorType type) { mExecutorType = type; }
     Executor::ExecutorType getExecutorType() { return mExecutorType; }
 
+    int getSmallIterationTime() { return mSmallIterationTime; }
+    void setSmallIterationTime(int value) { mSmallIterationTime = value; }
+
 protected:
     std::string mConfigFilePath;
     int mStartIndex;
     int mEndIndex;
     int mControlId;
+    int mSmallIterationTime;
     Executor::ExecutorType mExecutorType;
     std::vector<int> mNodeCluster;
 

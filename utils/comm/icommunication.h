@@ -33,12 +33,18 @@ public:
             }
             case SEND:
             {
+                if (dest == mRank)
+                    break;
+
                 assert (dest >= 0);
                 send(data, dest);
                 break;
             }
             case REC:
             {
+                if (source == mRank)
+                    break;
+
                 rec(source, data);
                 break;
             }

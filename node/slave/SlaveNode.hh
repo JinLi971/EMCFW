@@ -49,12 +49,18 @@ protected:
     MpiConnection mConnection;
     DataSet::Executor::IContext::ContextPtr mContext;
     DataSet::Executor::IResult::ResultPtr mResult;
+    std::unique_ptr<IExecutor> mExecutor;
 
     // IExecutable interface
 public:
     virtual bool readyExecutor(IExecutor *instance);
     virtual ExecutorType getRequiredExecutorType();
 
+private:
+    void prepareExecutor();
+    void reportResultToClusterHead();
+    void waitForTask();
+    void cleanResource();
 };
 
 }

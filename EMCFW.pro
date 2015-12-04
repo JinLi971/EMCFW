@@ -32,7 +32,9 @@ SOURCES += main.cpp \
     executor/MockExecutor.cc \
     dataset/executor/MockContextAndResult.cc \
     executor/ExecutorManager.cc \
-    executor/ExecutorFactory.cc
+    executor/ExecutorFactory.cc \
+    dataset/control/NodeInstructionData.cc \
+    dataset/executor/ContextAndResultFactory.cc
 
 
 HEADERS += \
@@ -71,7 +73,9 @@ HEADERS += \
     dataset/executor/IResult.hh \
     executor/IExecutable.hh \
     executor/ExecutorFactory.hh \
-    dataset/executor/ExecutorType.hh
+    dataset/executor/ExecutorType.hh \
+    dataset/control/NodeInstructionData.hh \
+    dataset/executor/ContextAndResultFactory.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi

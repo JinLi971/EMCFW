@@ -18,11 +18,10 @@ bool MockExecutor::init()
     return mReturnVal;
 }
 
-bool MockExecutor::start()
+void MockExecutor::start()
 {
     printf("Executor in Start\n");
     mExecState = RUNNING;
-    return mReturnVal;
 }
 
 void MockExecutor::abort()

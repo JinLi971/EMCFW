@@ -8,7 +8,8 @@ static const unsigned int RETRY_LIMIT = 5;
 
 enum ERROR_CODE
 {
-    EXECUTOR_INIT_EXCEPTION = 0
+    EXECUTOR_INIT_EXCEPTION = 0,
+    EXECUTOR_RUN_EXCEPTION
 };
 
 }

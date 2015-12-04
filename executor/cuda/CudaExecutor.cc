@@ -17,10 +17,9 @@ bool CudaExecutor::init()
     return true;
 }
 
-bool CudaExecutor::start()
+void CudaExecutor::start()
 {
     mExecState = RUNNING;
-    return true;
 }
 
 void CudaExecutor::abort()

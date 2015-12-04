@@ -20,7 +20,7 @@ public:
     // IExecutor interface
 public:
     virtual bool init();
-    virtual bool start();
+    virtual void start();
     virtual void abort();
     virtual void setContext(const IContext::ContextPtr &context);
     virtual IResult::ResultPtr getResult();

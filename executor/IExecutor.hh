@@ -9,7 +9,8 @@ namespace Executor
     enum ExecutionState
     {
         IDLE = -1,
-        WAITING = 0,
+        RESERVED = 0,
+        WAITING,
         RUNNING,
         ERROR,
         STOPPED
@@ -32,7 +33,7 @@ public:
     }
 
     virtual bool init() = 0;
-    virtual bool start() = 0;
+    virtual void start() = 0;
     virtual Executor::ExecutionState getExecutionState() {
         return mExecState;
     }
@@ -51,6 +52,10 @@ public:
     virtual NotifyState getNotifyHanlder(void* handler) {
         handler = mStateHandler;
         return mStateFunPtr;
+    }
+
+    virtual void reserve() {
+        mExecState = Executor::RESERVED;
     }
 
     virtual ExecutorType getType() = 0;

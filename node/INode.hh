@@ -8,6 +8,31 @@ namespace Node {
 class INode {
 
 public:
+    /** State Transition:
+     *  IDLE => (instruction from control) => INITED => STARTED => RUNNING => STOPPED
+     *   ^          |                                                             |
+     *   |      DESTROIED                                                         |
+     *   |------------------------------------------------------------------------
+     */
+
+    enum NodeState
+    {
+        IDLE = -1,
+        INITED,
+        STARTED,
+        RUNNING,
+        STOPPED,
+        DESTORIED
+    };
+
+    enum InstructionState
+    {
+        DIE = -1,
+        NEW_CONTEXT,
+        NEW_RESULT,
+        START
+    };
+
     virtual int getTaskId() const = 0;
     virtual void setTaskId(int value) = 0;
 
@@ -30,6 +55,9 @@ public:
     virtual void start() = 0;
     virtual void stop(int taskId = -1) = 0;
     virtual bool destory() = 0;
+
+protected:
+    NodeState mState;
 
 };
 

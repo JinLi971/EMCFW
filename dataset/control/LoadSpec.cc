@@ -33,6 +33,7 @@ LoadSpec::LoadSpec()
     mClassId = GlobalClassId::LOAD_SPEC;
 }
 
+
 void LoadSpec::serialize()
 {
     mSerializer << mClassId;
