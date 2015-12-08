@@ -5,6 +5,7 @@
 #include <vector>
 #include "utils/serializer/ISerializable.hh"
 #include "dataset/executor/ExecutorType.hh"
+#include <mpi.h>
 
 namespace DataSet
 {
@@ -44,6 +45,9 @@ public:
     int getSmallIterationTime() { return mSmallIterationTime; }
     void setSmallIterationTime(int value) { mSmallIterationTime = value; }
 
+    const std::map<int, int>& getGroupMap() { return mGroup; }
+    const int getGroupTaskId(int groupColor) { return mGroup[groupColor]; }
+
 protected:
     std::string mConfigFilePath;
     int mStartIndex;
@@ -52,6 +56,7 @@ protected:
     int mSmallIterationTime;
     Executor::ExecutorType mExecutorType;
     std::vector<int> mNodeCluster;
+    std::map<int, int> mGroup;
 
 
     // ISerializable interface

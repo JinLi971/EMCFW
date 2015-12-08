@@ -48,6 +48,17 @@ void LoadSpec::serialize()
     {
         mSerializer << mNodeCluster[i];
     }
+
+    // push in size of the node group
+    mSerializer << mGroup.size();
+    std::map<int, int>::iterator mapIter = mGroup.begin();
+    while(mapIter != mGroup.end())
+    {
+        mSerializer << mapIter->first;
+        mSerializer << mapIter->second;
+
+        ++ mapIter;
+    }
 }
 
 void LoadSpec::deserialize()
@@ -78,6 +89,24 @@ void LoadSpec::deserialize()
         mSerializer >> tmp;
         assert(tmp >= 0);
         mNodeCluster.push_back(tmp);
+    }
+
+    int sizeOfGroup = -1;
+    mSerializer >> sizeOfGroup;
+
+    assert (sizeOfGroup >= 0);
+
+    for (int i = 0; i < sizeOfGroup; ++ i)
+    {
+        int color = -1;
+        int key = -1;
+
+        mSerializer >> color;
+        mSerializer >> key;
+
+        assert(color >= 0);
+
+        mGroup.insert(std::make_pair<int, int>(color, key));
     }
 }
 

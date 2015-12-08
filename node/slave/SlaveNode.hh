@@ -62,7 +62,7 @@ public:
 private:
     void prepareExecutor();
     void reportResultToClusterHead();
-    void waitForTask();
+    void startJob();
     void cleanResource();
 };
 

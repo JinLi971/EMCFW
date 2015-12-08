@@ -34,7 +34,8 @@ SOURCES += main.cpp \
     executor/ExecutorManager.cc \
     executor/ExecutorFactory.cc \
     dataset/control/NodeInstructionData.cc \
-    dataset/executor/ContextAndResultFactory.cc
+    dataset/executor/ContextAndResultFactory.cc \
+    node/slave/ClusterHead.cc
 
 
 HEADERS += \
@@ -75,7 +76,8 @@ HEADERS += \
     executor/ExecutorFactory.hh \
     dataset/executor/ExecutorType.hh \
     dataset/control/NodeInstructionData.hh \
-    dataset/executor/ContextAndResultFactory.hh
+    dataset/executor/ContextAndResultFactory.hh \
+    node/slave/ClusterHead.hh
 
 LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi

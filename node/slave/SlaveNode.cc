@@ -61,10 +61,10 @@ void SlaveNode::loadData()
     assert(executor);
 
     Executor::ExecutorManager::getInstance()->addExecutor(executor);
-    waitForTask();
+    mState = INITED;
 }
 
-void SlaveNode::start()
+void SlaveNode::startJob()
 {
     // Get the executor
     Executor::ExecutorManager::getInstance()->getExecutor(this);
@@ -169,9 +169,8 @@ void SlaveNode::reportResultToClusterHead()
     mConnection.sync(mLoadSpec.getControlId(), -1, -1, true);
 }
 
-void SlaveNode::waitForTask()
+void SlaveNode::start()
 {
-    mState = INITED;
     bool debug = true;
     while(debug)
     {
@@ -182,31 +181,30 @@ void SlaveNode::waitForTask()
         mConnection.setData(&mCmd);
         mConnection.sync(-1, -1, mLoadSpec.getControlId());
 
-        if(mCmd.getInstruction() | INode::DIE)
+        if(mCmd.getInstruction() & INode::DIE)
         {
             Executor::ExecutorManager::getInstance()->destoryManager();
             break;
         }
 
-        if(mCmd.getInstruction() | INode::NEW_CONTEXT)
+        if(mCmd.getInstruction() & INode::NEW_CONTEXT)
         {
             mContext = mCmd.getContextPtr();
         }
 
-        if(mCmd.getInstruction() | INode::NEW_RESULT)
+        if(mCmd.getInstruction() & INode::NEW_RESULT)
         {
             mResult = mCmd.getResultPtr();
         }
 
-        if(mCmd.getInstruction() | INode::START)
+        if(mCmd.getInstruction() & INode::START)
         {
-            start();
+            startJob();
         }
     }
 
     printf("SlaveNode [%d]: Finalizing...\n", mTaskId);
     Executor::ExecutorManager::getInstance()->destoryManager();
-    mLoadSpec.deserialize();
     printf("SlaveNode [%d]: Exiting...\n", mTaskId);
 }
 
