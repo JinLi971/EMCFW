@@ -1,4 +1,5 @@
 #include "CudaContext.hh"
+#include "utils/serializer/GlobalClassId.hh"
 
 namespace DataSet
 {
@@ -14,6 +15,21 @@ CudaContext::CudaContext()
 ContextType CudaContext::getType()
 {
     return CUDA_CONTEXT;
+}
+
+void CudaContext::serialize()
+{
+
+}
+
+void CudaContext::deserialize()
+{
+
+}
+
+GlobalClassId::ClassId CudaContext::getClassId()
+{
+    return GlobalClassId::CUDA_CONTEXT;
 }
 
 

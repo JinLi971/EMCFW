@@ -23,87 +23,17 @@ void SerializationBase::operator >>(std::string &value)
     mPackedBytes.pop_front();
 }
 
-void SerializationBase::operator <<(const int &value)
+void SerializationBase::operator <<(const SerializationBase &value)
 {
-    cpyValue<int>(&value);
+    appendPackedString(value.getPackedString(), value.getTotalLength());
 }
 
-void SerializationBase::operator >>(int &value)
+void SerializationBase::operator >>(SerializationBase &value)
 {
-    getValue<int>(&value);
-}
-
-void SerializationBase::operator <<(const float &value)
-{
-    cpyValue<float>(&value);
-}
-
-void SerializationBase::operator >>(float &value)
-{
-    getValue<float>(&value);
-}
-
-void SerializationBase::operator <<(const double &value)
-{
-    cpyValue<double>(&value);
-}
-
-void SerializationBase::operator >>(double &value)
-{
-    getValue<double>(&value);
-}
-
-void SerializationBase::operator <<(const unsigned long &value)
-{
-    cpyValue<unsigned long>(&value);
-}
-
-void SerializationBase::operator >>(unsigned long &value)
-{
-    getValue<unsigned long>(&value);
-}
-
-void SerializationBase::operator <<(const unsigned int &value)
-{
-    cpyValue<unsigned int>(&value);
-}
-
-void SerializationBase::operator >>(unsigned int &value)
-{
-    getValue<unsigned int>(&value);
-}
-
-void SerializationBase::operator <<(const GlobalClassId::ClassId &value)
-{
-    int tempValue = (int) value;
-    cpyValue<int>(&tempValue);
-}
-
-void SerializationBase::operator >>(GlobalClassId::ClassId &value)
-{
-    int tempValue = -1;
-    getValue<int>(&tempValue);
-    value =(GlobalClassId::ClassId) tempValue;
-}
-
-void SerializationBase::operator <<(const bool &value)
-{
-    cpyValue<bool>(&value);
-}
-
-void SerializationBase::operator >>(bool &value)
-{
-    getValue<bool>(&value);
-}
-
-void SerializationBase::operator <<(const char &value)
-{
-    cpyValue<char>(&value);
-}
-
-void SerializationBase::operator >>(char &value)
-{
-    getValue<char>(&value);
+    value.setPackedString(mPackedBytes.front()->content);
+    mTotalLength -= (SIZE_T_LENGTH + mPackedBytes.front()->length);
+    delete mPackedBytes.front();
+    mPackedBytes.pop_front();
 }
 
 const char* SerializationBase::getPackedString() const
@@ -152,6 +82,28 @@ void SerializationBase::setPackedString(const char *packedString, int offset)
     assert(currentPtr == mTotalLength + sizeof(mTotalLength) + offset);
 }
 
+void SerializationBase::appendPackedString(const char *packedString, unsigned int start, unsigned int end)
+{
+    unsigned int length = end - start;
+
+    SerializeContent *content = new SerializeContent();
+    content->length = length;
+
+    char *payload = new char[length];
+    memmove(payload, packedString, length);
+    content->content = payload;
+
+
+    mPackedBytes.push_back(content);
+
+    mTotalLength += length;
+}
+
+void SerializationBase::appendPackedString(const char *packedString, unsigned int size)
+{
+    appendPackedString(packedString, 0, size);
+}
+
 
 int SerializationBase::getTotalLength() const
 {
@@ -191,3 +143,13 @@ SerializationBase::SerializationBase(SerializerTypeId typeId)
 {
 
 }
+
+SerializationBase::~SerializationBase()
+{
+    for(unsigned int i = 0; i < mPackedBytes.size(); ++ i)
+    {
+        delete mPackedBytes[i];
+    }
+    mPackedBytes.clear();
+}
+

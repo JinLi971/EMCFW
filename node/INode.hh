@@ -27,10 +27,11 @@ public:
 
     enum InstructionState
     {
-        DIE = -1,
-        NEW_CONTEXT,
-        NEW_RESULT,
-        START
+        DIE = 0x0000,
+        NEW_CONTEXT = 0x0002,
+        NEW_RESULT = 0x0004,
+        START = 0x0008
+        // Next 0x00000F
     };
 
     virtual int getTaskId() const = 0;

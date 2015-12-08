@@ -3,6 +3,7 @@
 
 #include "IContext.hh"
 #include "IResult.hh"
+#include "ExecutorType.hh"
 
 namespace DataSet
 {
@@ -13,18 +14,6 @@ class ContextAndResultFactory
 {
 
 public:
-    enum ContextType
-    {
-        MOCK_CONTEXT = 0,
-        CUDA_CONTEXT
-    };
-
-    enum ResultType
-    {
-        MOCK_RESULT = 0,
-        CUDA_RESULT
-    };
-
     static IContext::ContextPtr getContext(ContextType type);
     static IResult::ResultPtr getResult(ResultType type);
 

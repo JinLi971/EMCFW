@@ -17,6 +17,12 @@ public:
     // IContext interface
 public:
     virtual ContextType getType();
+
+    // ISerializable interface
+public:
+    virtual void serialize();
+    virtual void deserialize();
+    virtual GlobalClassId::ClassId getClassId();
 };
 
 class MockResult : public IResult
@@ -27,6 +33,12 @@ public:
     // IResult interface
 public:
     virtual ResultType getType();
+
+    // ISerializable interface
+public:
+    virtual void serialize();
+    virtual void deserialize();
+    virtual GlobalClassId::ClassId getClassId();
 };
 
 }

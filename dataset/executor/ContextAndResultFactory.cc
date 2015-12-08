@@ -1,6 +1,7 @@
 #include "ContextAndResultFactory.hh"
 #include "MockContextAndResult.hh"
 #include "cuda/CudaContext.hh"
+#include "cuda/CudaResult.hh"
 
 
 namespace DataSet
@@ -32,7 +33,19 @@ IContext::ContextPtr ContextAndResultFactory::getContext(ContextType type)
 
 IResult::ResultPtr ContextAndResultFactory::getResult(ResultType type)
 {
-
+    switch(type)
+    {
+        case MOCK_RESULT:
+        {
+            return IResult::ResultPtr(new MockResult());
+        }
+        case CUDA_RESULT:
+        {
+            return IResult::ResultPtr(new Cuda::CudaResult());
+        }
+        default:
+            return IResult::ResultPtr(NULL);
+    }
 }
 
 }

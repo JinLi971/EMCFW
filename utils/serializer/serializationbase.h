@@ -19,34 +19,23 @@ public:
    SerializationBase();
    SerializationBase(SerializerTypeId typeId);
 
-   virtual ~SerializationBase() {}
+   virtual ~SerializationBase();
 
    virtual void operator <<(const std::string& value);
    virtual void operator >>(std::string &value);
 
-   virtual void operator <<(const int& value);
-   virtual void operator >>(int &value);
+   virtual void operator <<(const SerializationBase &value);
+   virtual void operator >>(SerializationBase &value);
 
-   virtual void operator <<(const float& value);
-   virtual void operator >>(float& value);
+   template <typename T>
+   void operator <<(const T &value) {
+       cpyValue<T>(&value);
+   }
 
-   virtual void operator <<(const bool& value);
-   virtual void operator >>(bool& value);
-
-   virtual void operator <<(const char& value);
-   virtual void operator >>(char& value);
-
-   virtual void operator <<(const double &value);
-   virtual void operator >>(double &value);
-
-   virtual void operator <<(const unsigned long &value);
-   virtual void operator >>(unsigned long &value);
-
-   virtual void operator <<(const unsigned int &value);
-   virtual void operator >>(unsigned int &value);
-
-   virtual void operator <<(const GlobalClassId::ClassId &value);
-   virtual void operator >>(GlobalClassId::ClassId &value);
+   template <typename T>
+   void operator >>(T &value) {
+       getValue<T>(&value);
+   }
 
    template<typename ArrayType>
    void packPureArray(const int arrayLength, const ArrayType *payload)
@@ -82,6 +71,8 @@ public:
 
    virtual const char *getPackedString() const;
    virtual void setPackedString(const char* packedString, int offset = 0);
+   virtual void appendPackedString(const char *packedString, unsigned int start, unsigned int end);
+   virtual void appendPackedString(const char *packedString, unsigned int size);
 
    virtual int getTotalLength() const;
    virtual int getHeadLength() const  { return sizeof(mTotalLength); }

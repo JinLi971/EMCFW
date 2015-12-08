@@ -8,6 +8,7 @@
 
 #include "dataset/executor/IContext.hh"
 #include "dataset/executor/IResult.hh"
+#include "dataset/control/NodeInstructionData.hh"
 
 #include <memory>
 
@@ -50,6 +51,8 @@ protected:
     DataSet::Executor::IContext::ContextPtr mContext;
     DataSet::Executor::IResult::ResultPtr mResult;
     std::unique_ptr<IExecutor> mExecutor;
+    DataSet::Control::NodeInstructionData mCmd;
+
 
     // IExecutable interface
 public:

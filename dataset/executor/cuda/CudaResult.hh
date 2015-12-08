@@ -18,6 +18,12 @@ public:
     // IResult interface
 public:
     virtual ResultType getType();
+
+    // ISerializable interface
+public:
+    virtual void serialize();
+    virtual void deserialize();
+    virtual GlobalClassId::ClassId getClassId();
 };
 
 
