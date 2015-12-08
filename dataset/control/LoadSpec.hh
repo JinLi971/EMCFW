@@ -24,6 +24,19 @@ public:
 
     LoadSpec();
 
+    struct GroupStruct
+    {
+        MPI_Group group;
+        MPI_Comm comm;
+        int taskId;
+        int color;
+
+        virtual bool operator =(const GroupStruct& obj) {
+            return color == obj.color;
+        }
+
+    };
+
     const std::string& getConfigFilePath() { return mConfigFilePath; }
     void setConfigFilePath(const std::string& configPath) { mConfigFilePath = configPath; }
 
@@ -45,8 +58,15 @@ public:
     int getSmallIterationTime() { return mSmallIterationTime; }
     void setSmallIterationTime(int value) { mSmallIterationTime = value; }
 
-    const std::map<int, int>& getGroupMap() { return mGroup; }
-    const int getGroupTaskId(int groupColor) { return mGroup[groupColor]; }
+    const std::vector<GroupStruct>& getGroupMap() { return mGroup; }
+
+
+    const int getGroupTaskId(int groupColor) {
+        for(auto ele : mGroup) {
+            if(ele.color == groupColor)
+                return ele.taskId;
+        }
+    }
 
 protected:
     std::string mConfigFilePath;
@@ -56,8 +76,7 @@ protected:
     int mSmallIterationTime;
     Executor::ExecutorType mExecutorType;
     std::vector<int> mNodeCluster;
-    std::map<int, int> mGroup;
-
+    std::vector<GroupStruct> mGroup;
 
     // ISerializable interface
 public:

@@ -38,6 +38,11 @@ void SlaveNode::setLoadSpec(const DataSet::Control::LoadSpec &loadSpec)
     mLoadSpec = loadSpec;
 }
 
+void SlaveNode::init()
+{
+    // Do nothing until receive the loadSpec
+}
+
 void SlaveNode::dispatchJob()
 {
     mConnection.setMode(IComm::REC);
@@ -45,11 +50,6 @@ void SlaveNode::dispatchJob()
     mConnection.sync(&mLoadSpec, -1, -1, DataSet::ROOT_ID);
     // Sync nodes in order to start correctly
     mConnection.barrier();
-}
-
-void SlaveNode::init()
-{
-    // Do nothing until receive the loadSpec
 }
 
 void SlaveNode::loadData()
@@ -61,7 +61,63 @@ void SlaveNode::loadData()
     assert(executor);
 
     Executor::ExecutorManager::getInstance()->addExecutor(executor);
+
+    joinGroup();
     mState = INITED;
+}
+
+void SlaveNode::joinGroup()
+{
+    MPI_Group worldGroup;
+    MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
+
+    for(std::vector<DataSet::Control::LoadSpec::GroupStruct>::iterator iter = mLoadSpec.getGroupMap();
+        iter != mLoadSpec.getGroupMap().end();
+        ++ iter)
+    {
+        DataSet::Control::LoadSpec::GroupStruct& groupRef = (*iter);
+
+        MPI_Comm_split(MPI_COMM_WORLD, groupRef.color, mTaskId, &groupRef.comm);
+    }
+}
+
+void SlaveNode::start()
+{
+    bool debug = true;
+    while(debug)
+    {
+        debug = true;
+        cleanResource();
+
+        mConnection.setMode(IComm::REC);
+        mConnection.setData(&mCmd);
+        mConnection.sync(-1, -1, mLoadSpec.getControlId());
+
+        if(mCmd.getInstruction() & INode::DIE)
+        {
+            Executor::ExecutorManager::getInstance()->destoryManager();
+            break;
+        }
+
+        if(mCmd.getInstruction() & INode::NEW_CONTEXT)
+        {
+            mContext = mCmd.getContextPtr();
+        }
+
+        if(mCmd.getInstruction() & INode::NEW_RESULT)
+        {
+            mResult = mCmd.getResultPtr();
+        }
+
+        if(mCmd.getInstruction() & INode::START)
+        {
+            startJob();
+        }
+    }
+
+    printf("SlaveNode [%d]: Finalizing...\n", mTaskId);
+    Executor::ExecutorManager::getInstance()->destoryManager();
+    printf("SlaveNode [%d]: Exiting...\n", mTaskId);
 }
 
 void SlaveNode::startJob()
@@ -169,44 +225,7 @@ void SlaveNode::reportResultToClusterHead()
     mConnection.sync(mLoadSpec.getControlId(), -1, -1, true);
 }
 
-void SlaveNode::start()
-{
-    bool debug = true;
-    while(debug)
-    {
-        debug = true;
-        cleanResource();
 
-        mConnection.setMode(IComm::REC);
-        mConnection.setData(&mCmd);
-        mConnection.sync(-1, -1, mLoadSpec.getControlId());
-
-        if(mCmd.getInstruction() & INode::DIE)
-        {
-            Executor::ExecutorManager::getInstance()->destoryManager();
-            break;
-        }
-
-        if(mCmd.getInstruction() & INode::NEW_CONTEXT)
-        {
-            mContext = mCmd.getContextPtr();
-        }
-
-        if(mCmd.getInstruction() & INode::NEW_RESULT)
-        {
-            mResult = mCmd.getResultPtr();
-        }
-
-        if(mCmd.getInstruction() & INode::START)
-        {
-            startJob();
-        }
-    }
-
-    printf("SlaveNode [%d]: Finalizing...\n", mTaskId);
-    Executor::ExecutorManager::getInstance()->destoryManager();
-    printf("SlaveNode [%d]: Exiting...\n", mTaskId);
-}
 
 void SlaveNode::cleanResource()
 {

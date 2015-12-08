@@ -51,11 +51,11 @@ void LoadSpec::serialize()
 
     // push in size of the node group
     mSerializer << mGroup.size();
-    std::map<int, int>::iterator mapIter = mGroup.begin();
+    std::vector<GroupStruct>::iterator mapIter = mGroup.begin();
     while(mapIter != mGroup.end())
     {
-        mSerializer << mapIter->first;
-        mSerializer << mapIter->second;
+        mSerializer << mapIter->color;
+        mSerializer << mapIter->taskId;
 
         ++ mapIter;
     }
@@ -99,14 +99,14 @@ void LoadSpec::deserialize()
     for (int i = 0; i < sizeOfGroup; ++ i)
     {
         int color = -1;
-        int key = -1;
+        GroupStruct group;
 
-        mSerializer >> color;
-        mSerializer >> key;
+        mSerializer >> group.color;
+        mSerializer >> group.taskId;
 
         assert(color >= 0);
 
-        mGroup.insert(std::make_pair<int, int>(color, key));
+        mGroup.push_back(group);
     }
 }
 

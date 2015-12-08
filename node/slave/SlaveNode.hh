@@ -64,6 +64,7 @@ private:
     void reportResultToClusterHead();
     void startJob();
     void cleanResource();
+    void joinGroup();
 };
 
 }
