@@ -28,11 +28,22 @@ public:
     {
         MPI_Group group;
         MPI_Comm comm;
+        std::vector<int> cluster;
         int taskId;
         int color;
+        int controller;
 
         virtual bool operator =(const GroupStruct& obj) {
             return color == obj.color;
+        }
+
+        int *getClusterList() {
+            int* nodeListCpy = new int[cluster.size()];
+            for(unsigned int i = 0; i < cluster.size(); ++ i) {
+                nodeListCpy[i] = cluster[i];
+            }
+
+            return nodeListCpy;
         }
 
     };
@@ -49,8 +60,12 @@ public:
     int getControlId() { return mControlId; }
     void setControlId(int value) { mControlId = value; }
 
-    const std::vector<int>& getNodeCluster() { return mNodeCluster; }
-    std::vector<int>& getNodeClusterRef() { return mNodeCluster; }
+    int *getNodeCluster(int groupId) {
+        if(!mGroup.count(groupId))
+            return NULL;
+
+        return mGroup[groupId].getClusterList();
+    }
 
     void setExecutorType(Executor::ExecutorType type) { mExecutorType = type; }
     Executor::ExecutorType getExecutorType() { return mExecutorType; }
@@ -58,14 +73,14 @@ public:
     int getSmallIterationTime() { return mSmallIterationTime; }
     void setSmallIterationTime(int value) { mSmallIterationTime = value; }
 
-    const std::vector<GroupStruct>& getGroupMap() { return mGroup; }
+    const std::map<int, GroupStruct>& getGroup() const { return mGroup; }
+    std::map<int, GroupStruct>& getGroup() { return mGroup; }
 
+    int getGroupTaskId(int groupColor) {
+        if(!mGroup.count(groupColor))
+            return -1;
 
-    const int getGroupTaskId(int groupColor) {
-        for(auto ele : mGroup) {
-            if(ele.color == groupColor)
-                return ele.taskId;
-        }
+        return mGroup[groupColor].taskId;
     }
 
 protected:
@@ -75,8 +90,7 @@ protected:
     int mControlId;
     int mSmallIterationTime;
     Executor::ExecutorType mExecutorType;
-    std::vector<int> mNodeCluster;
-    std::vector<GroupStruct> mGroup;
+    std::map<int, GroupStruct> mGroup;
 
     // ISerializable interface
 public:

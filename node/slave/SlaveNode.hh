@@ -21,6 +21,7 @@ class SlaveNode : public INode, Executor::IExecutable
 {
 public:
     SlaveNode(int taskId);
+    virtual ~SlaveNode();
 
     // INode interface
 public:
@@ -64,7 +65,6 @@ private:
     void reportResultToClusterHead();
     void startJob();
     void cleanResource();
-    void joinGroup();
 };
 
 }

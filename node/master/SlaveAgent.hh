@@ -33,6 +33,8 @@ protected:
     int mTaskId;
     DataSet::Control::LoadSpec mLoadSpec;
 
+private:
+    void constructGroup();
 };
 
 }

@@ -17,8 +17,7 @@ LoadSpec::LoadSpec(const std::string &configFilePath,
       mStartIndex(startIndex),
       mEndIndex(endIndex),
       mControlId(controlId),
-      mExecutorType(execType),
-      mNodeCluster(nodeCluster)
+      mExecutorType(execType)
 {
     mClassId = GlobalClassId::LOAD_SPEC;
 }
@@ -42,20 +41,20 @@ void LoadSpec::serialize()
     mSerializer << mEndIndex;
     mSerializer << mControlId;
     mSerializer << (int)mExecutorType;
-    // push in size of the node cluster
-    mSerializer << (unsigned int) mNodeCluster.size();
-    for (unsigned int i = 0; i < mNodeCluster.size(); ++ i)
-    {
-        mSerializer << mNodeCluster[i];
-    }
 
     // push in size of the node group
     mSerializer << mGroup.size();
-    std::vector<GroupStruct>::iterator mapIter = mGroup.begin();
+    std::map<int, GroupStruct>::iterator mapIter = mGroup.begin();
     while(mapIter != mGroup.end())
     {
-        mSerializer << mapIter->color;
-        mSerializer << mapIter->taskId;
+        mSerializer << mapIter->second.color;
+        mSerializer << mapIter->second.taskId;
+        // push in size of the node cluster
+        mSerializer << (unsigned int) mGroup[mapIter->second.color].cluster.size();
+        for (unsigned int i = 0; i < mGroup[mapIter->second.color].cluster.size(); ++ i)
+        {
+            mSerializer << mGroup[mapIter->second.color].cluster[i];
+        }
 
         ++ mapIter;
     }
@@ -63,7 +62,7 @@ void LoadSpec::serialize()
 
 void LoadSpec::deserialize()
 {
-    mNodeCluster.clear();
+    mGroup.clear();
 
     mSerializer >> mClassId;
     assert (mClassId == GlobalClassId::LOAD_SPEC);
@@ -77,20 +76,6 @@ void LoadSpec::deserialize()
     mSerializer >> tmpExecutorType;
     mExecutorType = (Executor::ExecutorType) tmpExecutorType;
 
-    // get the size of node cluster
-    int sizeOfNodeCluster = -1;
-    mSerializer >> sizeOfNodeCluster;
-
-    assert (sizeOfNodeCluster >= 0);
-    mNodeCluster.reserve(sizeOfNodeCluster);
-
-    for (int i = 0, tmp = -1; i < sizeOfNodeCluster; ++ i, tmp = -1)
-    {
-        mSerializer >> tmp;
-        assert(tmp >= 0);
-        mNodeCluster.push_back(tmp);
-    }
-
     int sizeOfGroup = -1;
     mSerializer >> sizeOfGroup;
 
@@ -103,10 +88,21 @@ void LoadSpec::deserialize()
 
         mSerializer >> group.color;
         mSerializer >> group.taskId;
+        // get the size of node cluster
+        int sizeOfNodeCluster = -1;
+        mSerializer >> sizeOfNodeCluster;
+        assert (sizeOfNodeCluster >= 0);
+        group.cluster.reserve(sizeOfNodeCluster);
+
+        for (int i = 0, tmp = -1; i < sizeOfNodeCluster; ++ i, tmp = -1)
+        {
+            mSerializer >> tmp;
+            assert(tmp >= 0);
+            group.cluster.push_back(tmp);
+        }
 
         assert(color >= 0);
-
-        mGroup.push_back(group);
+        mGroup[i] = group;
     }
 }
 

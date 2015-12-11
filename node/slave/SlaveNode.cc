@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "dataset/Constants.hh"
 #include "executor/ExecutorFactory.hh"
+#include "node/NodeUtils.hh"
 
 #include <unistd.h>
 #include <thread>
@@ -15,6 +16,13 @@ SlaveNode::SlaveNode(int taskId)
     : mTaskId(taskId)
 {
     mState = IDLE;
+}
+
+SlaveNode::~SlaveNode()
+{
+    cleanResource();
+    mLoadSpec.getSerializerRef().clearContent();
+    mLoadSpec.getGroup().clear();
 }
 
 int SlaveNode::getTaskId() const
@@ -62,23 +70,8 @@ void SlaveNode::loadData()
 
     Executor::ExecutorManager::getInstance()->addExecutor(executor);
 
-    joinGroup();
+    Utils::GroupHelpers::constructGroup(mLoadSpec, mTaskId);
     mState = INITED;
-}
-
-void SlaveNode::joinGroup()
-{
-    MPI_Group worldGroup;
-    MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
-
-    for(std::vector<DataSet::Control::LoadSpec::GroupStruct>::iterator iter = mLoadSpec.getGroupMap();
-        iter != mLoadSpec.getGroupMap().end();
-        ++ iter)
-    {
-        DataSet::Control::LoadSpec::GroupStruct& groupRef = (*iter);
-
-        MPI_Comm_split(MPI_COMM_WORLD, groupRef.color, mTaskId, &groupRef.comm);
-    }
 }
 
 void SlaveNode::start()

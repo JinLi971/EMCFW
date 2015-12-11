@@ -1,4 +1,6 @@
 #include "SlaveAgent.hh"
+#include "node/NodeUtils.hh"
+#include <mpi.h>
 
 namespace Node {
 namespace Master {
@@ -27,6 +29,8 @@ void SlaveAgent::dispatchJob()
     mCommunicator.setMode(IComm::SEND);
     mCommunicator.sync(&mLoadSpec, mTaskId);
     mCommunicator.barrier();
+
+    Utils::GroupHelpers::constructGroup(mLoadSpec, mTaskId);
 }
 
 void SlaveAgent::loadData()
