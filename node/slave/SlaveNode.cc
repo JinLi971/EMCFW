@@ -113,6 +113,16 @@ void SlaveNode::start()
     printf("SlaveNode [%d]: Exiting...\n", mTaskId);
 }
 
+void SlaveNode::stop(int taskId)
+{
+
+}
+
+bool SlaveNode::destory()
+{
+
+}
+
 void SlaveNode::startJob()
 {
     // Get the executor

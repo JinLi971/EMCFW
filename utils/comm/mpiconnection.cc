@@ -18,7 +18,7 @@ void MpiConnection::send(ISerializable *data, int dest)
     data->serialize();
     int size = data->getSerializer().getSize();
     const char *serilizedData = data->getSerializer().getPackedString();
-    MPI_Send(serilizedData, size, MPI_BYTE, dest, mRandomTag, MPI_COMM_WORLD);
+    MPI_Send(const_cast<char *>(serilizedData), size, MPI_BYTE, dest, mRandomTag, MPI_COMM_WORLD);
 }
 
 

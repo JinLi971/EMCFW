@@ -5,6 +5,8 @@
 namespace Executor
 {
 
+std::unique_ptr<ExecutorManager> ExecutorManager::mInstance = nullptr;
+
 ExecutorManager::ExecutorManager()
 {
 }
@@ -16,17 +18,17 @@ ExecutorManager::~ExecutorManager()
 
 ExecutorManager *ExecutorManager::getInstance()
 {
-    if(instance)
-        return instance;
-
-    instance = new ExecutorManager();
-    return instance;
+    if(mInstance.get() != nullptr)
+    {
+        mInstance.reset(new ExecutorManager());
+    }
+    return mInstance.get();
 }
 
 void ExecutorManager::destoryManager()
 {
     destory();
-    (*instance).~ExecutorManager();
+    mInstance->~ExecutorManager();
 }
 
 void ExecutorManager::destory()
@@ -78,17 +80,17 @@ void ExecutorManager::handleExecutorStateChange(ExecutionState state,
     ExecutorManager *self = static_cast<ExecutorManager *>(handler);
     switch(state)
     {
-        case IDLE:
-        case ERROR:
-        case STOPPED:
-        {
-            self->dispatchJob(instance);
-            break;
-        }
-        default:
-        {
-            return;
-        }
+    case IDLE:
+    case ERROR:
+    case STOPPED:
+    {
+        self->dispatchJob(instance);
+        break;
+    }
+    default:
+    {
+        return;
+    }
     }
 }
 

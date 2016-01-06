@@ -38,5 +38,20 @@ void SlaveAgent::loadData()
     // Do nothing
 }
 
+void SlaveAgent::start()
+{
+
+}
+
+void SlaveAgent::stop(int taskId)
+{
+
+}
+
+bool SlaveAgent::destory()
+{
+
+}
+
 }
 }

@@ -64,6 +64,16 @@ void MasterNode::start()
 
 }
 
+void MasterNode::stop(int taskId)
+{
+
+}
+
+bool MasterNode::destory()
+{
+
+}
+
 void MasterNode::loadData()
 {
     // Do nothing

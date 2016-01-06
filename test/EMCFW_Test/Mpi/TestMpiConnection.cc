@@ -2,6 +2,7 @@
 #include "../../../dataset/control/LoadSpec.hh"
 #include <mpi.h>
 
+using namespace DataSet::Control;
 
 TestMpiConnection::TestMpiConnection()
     : mTaskId(-1),
@@ -25,9 +26,19 @@ void TestMpiConnection::SetUp()
     mBeforeSend.setControlId(1);
     mBeforeSend.setStartIndex(1);
     mBeforeSend.setEndIndex(100);
-    mBeforeSend.getNodeClusterRef().push_back(0);
-    mBeforeSend.getNodeClusterRef().push_back(1);
-    mBeforeSend.getNodeClusterRef().push_back(2);
+
+    std::map<int, LoadSpec::GroupStruct>& beforeGroup = mBeforeSend.getGroup();
+    std::vector<int> clusterVector {0, 1, 2};
+    LoadSpec::GroupStruct serializeGroup;
+
+    serializeGroup.group = NULL;
+    serializeGroup.comm = NULL;
+    serializeGroup.cluster = clusterVector;
+    serializeGroup.taskId = 1;
+    serializeGroup.color = 1;
+    serializeGroup.controller = 1;
+
+    beforeGroup[0] = serializeGroup;
 
     // All task will be in same group.
     mConnection.barrier();
@@ -46,10 +57,17 @@ void TestMpiConnection::compareResult(DataSet::Control::LoadSpec& expected,
     EXPECT_EQ (expected.getControlId(), actual.getControlId());
     EXPECT_EQ (expected.getStartIndex(), actual.getStartIndex());
     EXPECT_EQ (expected.getEndIndex(), actual.getEndIndex());
-    EXPECT_EQ (expected.getNodeCluster().size(), actual.getNodeCluster().size());
-    EXPECT_EQ (expected.getNodeCluster()[0], actual.getNodeCluster()[0]);
-    EXPECT_EQ (expected.getNodeCluster()[1], actual.getNodeCluster()[1]);
-    EXPECT_EQ (expected.getNodeCluster()[2], actual.getNodeCluster()[2]);
+
+    const LoadSpec::GroupStruct& serializeGroup = expected.getGroup()[0];
+    const LoadSpec::GroupStruct& afterGroup = actual.getGroup()[0];
+
+    EXPECT_EQ (serializeGroup.cluster.size(), afterGroup.cluster.size());
+    EXPECT_EQ (serializeGroup.cluster[0], afterGroup.cluster[0]);
+    EXPECT_EQ (serializeGroup.cluster[1], afterGroup.cluster[1]);
+    EXPECT_EQ (serializeGroup.cluster[2], afterGroup.cluster[2]);
+    EXPECT_EQ (serializeGroup.color, afterGroup.color);
+    EXPECT_EQ (serializeGroup.controller, afterGroup.controller);
+    EXPECT_EQ (serializeGroup.taskId, afterGroup.taskId);
 }
 
 void TestMpiConnection::testBasicSendRecv()

@@ -10,8 +10,7 @@ QMAKE_CXXFLAGS += -std=c++11
 
 DEFINES += EMCFW_LIBRARY
 
-SOURCES += main.cpp \
-    node/NodeFactory.cc \
+SOURCES += node/NodeFactory.cc \
     node/master/MasterNode.cc \
     dataset/Frame.cc \
     dataset/FrameList.cc \
@@ -85,8 +84,8 @@ LIBS += -L/usr/local/lib64/ -lspimage
 LIBS += -L/usr/lib/ -lmpi
 LIBS += -L/usr/lib/x86_64-linux-gnu -lconfig++
 
-LIBS += -L/home/exuugag/devApp/openmpi/lib -lmpi
-LIBS += -L/home/exuugag/devApp/libconfig/lib -lconfig++
+#LIBS += -L/home/exuugag/devApp/openmpi/lib -lmpi
+#LIBS += -L/home/exuugag/devApp/libconfig/lib -lconfig++
 
 
 INCLUDEPATH += /usr/local/include/spimage \

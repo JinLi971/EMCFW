@@ -4,6 +4,7 @@
 #include "../../../node/master/MasterConf.hh"
 #include "../../../dataset/executor/ExecutorType.hh"
 
+using namespace DataSet::Control;
 TestSerialization::TestSerialization()
 {
 }
@@ -28,9 +29,19 @@ TEST(TestSerialization, testLoadSpec)
     before.setStartIndex(1);
     before.setEndIndex(100);
     before.setExecutorType(DataSet::Executor::MOCK);
-    before.getNodeClusterRef().push_back(0);
-    before.getNodeClusterRef().push_back(1);
-    before.getNodeClusterRef().push_back(2);
+
+    std::map<int, LoadSpec::GroupStruct>& beforeGroup = before.getGroup();
+    std::vector<int> clusterVector {1, 2, 3};
+    LoadSpec::GroupStruct serializeGroup;
+
+    serializeGroup.group = NULL;
+    serializeGroup.comm = NULL;
+    serializeGroup.cluster = clusterVector;
+    serializeGroup.taskId = 1;
+    serializeGroup.color = 1;
+    serializeGroup.controller = 1;
+
+    beforeGroup[0] = serializeGroup;
 
     before.serialize();
     const char * result = before.getSerializer().getPackedString();
@@ -45,10 +56,16 @@ TEST(TestSerialization, testLoadSpec)
     EXPECT_EQ (before.getStartIndex(), after.getStartIndex());
     EXPECT_EQ (before.getEndIndex(), after.getEndIndex());
     EXPECT_EQ (before.getExecutorType(), after.getExecutorType());
-    EXPECT_EQ (before.getNodeCluster().size(), after.getNodeCluster().size());
-    EXPECT_EQ (before.getNodeCluster()[0], after.getNodeCluster()[0]);
-    EXPECT_EQ (before.getNodeCluster()[1], after.getNodeCluster()[1]);
-    EXPECT_EQ (before.getNodeCluster()[2], after.getNodeCluster()[2]);
+
+    const LoadSpec::GroupStruct& afterGroup = after.getGroup()[0];
+
+    EXPECT_EQ (serializeGroup.cluster.size(), afterGroup.cluster.size());
+    EXPECT_EQ (serializeGroup.cluster[0], afterGroup.cluster[0]);
+    EXPECT_EQ (serializeGroup.cluster[1], afterGroup.cluster[1]);
+    EXPECT_EQ (serializeGroup.cluster[2], afterGroup.cluster[2]);
+    EXPECT_EQ (serializeGroup.color, afterGroup.color);
+    EXPECT_EQ (serializeGroup.controller, afterGroup.controller);
+    EXPECT_EQ (serializeGroup.taskId, afterGroup.taskId);
 }
 
 TEST(TestSerialization, testMasterConf)

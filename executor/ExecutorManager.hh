@@ -36,7 +36,7 @@ private:
     std::list<IExecutable*> mRequestQueue;
     std::mutex mMutex;
     std::mutex mDispatchMutex;
-    static ExecutorManager* instance;
+    static std::unique_ptr<ExecutorManager> mInstance;
 
 private:
     ExecutorManager();
