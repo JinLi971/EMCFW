@@ -11,7 +11,10 @@ QT       -= gui
 TARGET = EMCFW_Test
 CONFIG   += console
 CONFIG   -= app_bundle
-CONFIG += c++11
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CC = mpicc
+QMAKE_CXX = mpic++
+QMAKE_LINK = mpic++
 
 TEMPLATE = app
 
@@ -20,7 +23,7 @@ SOURCES += main.cc \
     Serialization/TestSerialization.cc \
     Mpi/TestMpiConnection.cc
 
-LIBS += -L$$PWD/../../../build-EMCFW-Desktop_Qt_5_5_1_GCC_64bit-Debug/ -lEMCFW
+LIBS += -L$$PWD/../../../build-EMCFW-Desktop-Debug/ -lEMCFW
 LIBS += -L/usr/lib/ -lmpi
 
 INCLUDEPATH += $$PWD/../../

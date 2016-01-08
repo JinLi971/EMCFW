@@ -33,7 +33,7 @@ public:
         int color;
         int controller;
 
-        virtual bool operator =(const GroupStruct& obj) {
+        virtual bool operator ==(const GroupStruct& obj) {
             return color == obj.color;
         }
 
@@ -44,6 +44,15 @@ public:
             }
 
             return nodeListCpy;
+        }
+
+        inline virtual void operator =(const GroupStruct& rhs) {
+            group = rhs.group;
+            comm = rhs.comm;
+            cluster = rhs.cluster;
+            taskId = rhs.taskId;
+            color = rhs.color;
+            controller = rhs.controller;
         }
 
     };

@@ -38,7 +38,7 @@ void TestMpiConnection::SetUp()
     serializeGroup.color = 1;
     serializeGroup.controller = 1;
 
-    beforeGroup[0] = serializeGroup;
+    beforeGroup[serializeGroup.color] = serializeGroup;
 
     // All task will be in same group.
     mConnection.barrier();
@@ -58,8 +58,8 @@ void TestMpiConnection::compareResult(DataSet::Control::LoadSpec& expected,
     EXPECT_EQ (expected.getStartIndex(), actual.getStartIndex());
     EXPECT_EQ (expected.getEndIndex(), actual.getEndIndex());
 
-    const LoadSpec::GroupStruct& serializeGroup = expected.getGroup()[0];
-    const LoadSpec::GroupStruct& afterGroup = actual.getGroup()[0];
+    const LoadSpec::GroupStruct& serializeGroup = expected.getGroup()[serializeGroup.color];
+    const LoadSpec::GroupStruct& afterGroup = actual.getGroup()[serializeGroup.color];
 
     EXPECT_EQ (serializeGroup.cluster.size(), afterGroup.cluster.size());
     EXPECT_EQ (serializeGroup.cluster[0], afterGroup.cluster[0]);

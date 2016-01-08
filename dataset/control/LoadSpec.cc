@@ -49,6 +49,7 @@ void LoadSpec::serialize()
     {
         mSerializer << mapIter->second.color;
         mSerializer << mapIter->second.taskId;
+        mSerializer << mapIter->second.controller;
         // push in size of the node cluster
         mSerializer << (unsigned int) mGroup[mapIter->second.color].cluster.size();
         for (unsigned int i = 0; i < mGroup[mapIter->second.color].cluster.size(); ++ i)
@@ -83,11 +84,11 @@ void LoadSpec::deserialize()
 
     for (int i = 0; i < sizeOfGroup; ++ i)
     {
-        int color = -1;
         GroupStruct group;
 
         mSerializer >> group.color;
         mSerializer >> group.taskId;
+        mSerializer >> group.controller;
         // get the size of node cluster
         int sizeOfNodeCluster = -1;
         mSerializer >> sizeOfNodeCluster;
@@ -101,8 +102,9 @@ void LoadSpec::deserialize()
             group.cluster.push_back(tmp);
         }
 
-        assert(color >= 0);
-        mGroup[i] = group;
+        assert(group.color >= 0);
+        assert(!mGroup.count(group.color));
+        mGroup[group.color] = group;
     }
 }
 

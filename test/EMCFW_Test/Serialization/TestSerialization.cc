@@ -41,7 +41,7 @@ TEST(TestSerialization, testLoadSpec)
     serializeGroup.color = 1;
     serializeGroup.controller = 1;
 
-    beforeGroup[0] = serializeGroup;
+    beforeGroup[serializeGroup.color] = serializeGroup;
 
     before.serialize();
     const char * result = before.getSerializer().getPackedString();
@@ -57,7 +57,7 @@ TEST(TestSerialization, testLoadSpec)
     EXPECT_EQ (before.getEndIndex(), after.getEndIndex());
     EXPECT_EQ (before.getExecutorType(), after.getExecutorType());
 
-    const LoadSpec::GroupStruct& afterGroup = after.getGroup()[0];
+    const LoadSpec::GroupStruct& afterGroup = after.getGroup()[serializeGroup.color];
 
     EXPECT_EQ (serializeGroup.cluster.size(), afterGroup.cluster.size());
     EXPECT_EQ (serializeGroup.cluster[0], afterGroup.cluster[0]);
