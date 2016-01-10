@@ -49,7 +49,7 @@ void MasterNode::dispatchJob()
     }
 }
 
-const DataSet::Control::LoadSpec &MasterNode::getLoadSpec()
+const DataSet::Control::LoadSpec &MasterNode::getLoadSpec() const
 {
     return mEmptyLoadSpec;
 }

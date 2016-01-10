@@ -16,6 +16,7 @@ SlaveNode::SlaveNode(int taskId)
     : mTaskId(taskId)
 {
     mState = IDLE;
+    mConnection.setRank(mTaskId);
 }
 
 SlaveNode::~SlaveNode()
@@ -36,7 +37,7 @@ void SlaveNode::setTaskId(int value)
     mTaskId = value;
 }
 
-const DataSet::Control::LoadSpec &SlaveNode::getLoadSpec()
+const DataSet::Control::LoadSpec &SlaveNode::getLoadSpec() const
 {
     return mLoadSpec;
 }
@@ -79,7 +80,6 @@ void SlaveNode::start()
     bool debug = true;
     while(debug)
     {
-        debug = true;
         cleanResource();
 
         mConnection.setMode(IComm::REC);
@@ -88,17 +88,18 @@ void SlaveNode::start()
 
         if(mCmd.getInstruction() & INode::DIE)
         {
-            Executor::ExecutorManager::getInstance()->destoryManager();
             break;
         }
 
         if(mCmd.getInstruction() & INode::NEW_CONTEXT)
         {
+            mContext.reset();
             mContext = mCmd.getContextPtr();
         }
 
         if(mCmd.getInstruction() & INode::NEW_RESULT)
         {
+            mResult.reset();
             mResult = mCmd.getResultPtr();
         }
 
@@ -115,12 +116,19 @@ void SlaveNode::start()
 
 void SlaveNode::stop(int taskId)
 {
+    if(taskId != mTaskId)
+        return;
 
+    if(mExecutor)
+        mExecutor->abort();
 }
 
 bool SlaveNode::destory()
 {
+    stop(mTaskId);
+    Executor::ExecutorManager::getInstance()->destoryManager();
 
+    return true;
 }
 
 void SlaveNode::startJob()
@@ -232,12 +240,14 @@ void SlaveNode::reportResultToClusterHead()
 
 void SlaveNode::cleanResource()
 {
-    mState = IDLE;
-    mExecutor->resetToIdle();
-    mExecutor.reset();
+    if(mState == IDLE || mState == INITED) return;
 
-    mContext.reset();
-    mResult.reset();
+    mState = IDLE;
+    if(mExecutor)
+    {
+        mExecutor->resetToIdle();
+        mExecutor.reset();
+    }
 }
 
 }

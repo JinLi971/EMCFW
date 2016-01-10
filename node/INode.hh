@@ -27,11 +27,11 @@ public:
 
     enum InstructionState
     {
-        DIE = 0x0000,
+        DIE = 0x0001,
         NEW_CONTEXT = 0x0002,
         NEW_RESULT = 0x0004,
         START = 0x0008
-        // Next 0x00000F
+        // Next 0x000010
     };
 
     virtual int getTaskId() const = 0;
@@ -41,7 +41,7 @@ public:
      * @brief getLoadSpec return the LoadSpec of the slave node
      * @return
      */
-    virtual const DataSet::Control::LoadSpec& getLoadSpec() = 0;
+    virtual const DataSet::Control::LoadSpec& getLoadSpec() const = 0;
 
     /**
      * @brief setLoadSpec set the LoadSpec to the slave node
@@ -56,6 +56,7 @@ public:
     virtual void start() = 0;
     virtual void stop(int taskId = -1) = 0;
     virtual bool destory() = 0;
+
 
 protected:
     NodeState mState;

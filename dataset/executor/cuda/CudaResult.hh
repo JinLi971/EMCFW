@@ -17,7 +17,7 @@ public:
 
     // IResult interface
 public:
-    virtual ResultType getType();
+    virtual ResultType getType() const;
 
     // ISerializable interface
 public:

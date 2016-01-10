@@ -27,7 +27,7 @@ public:
 public:
     virtual int getTaskId() const;
     virtual void setTaskId(int value);
-    virtual const DataSet::Control::LoadSpec &getLoadSpec();
+    virtual const DataSet::Control::LoadSpec &getLoadSpec() const;
     virtual void setLoadSpec(const DataSet::Control::LoadSpec &loadSpec);
     virtual void dispatchJob();
     virtual void init();

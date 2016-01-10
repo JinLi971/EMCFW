@@ -16,7 +16,7 @@ public:
     typedef std::shared_ptr<DataSet::Executor::IResult> ResultPtr;
     virtual ~IResult() {}
 
-    virtual ResultType getType() = 0;
+    virtual ResultType getType() const = 0;
 
     // ISerializable interface
 public:

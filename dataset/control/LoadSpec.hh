@@ -57,7 +57,7 @@ public:
 
     };
 
-    const std::string& getConfigFilePath() { return mConfigFilePath; }
+    const std::string& getConfigFilePath() const { return mConfigFilePath; }
     void setConfigFilePath(const std::string& configPath) { mConfigFilePath = configPath; }
 
     int getStartIndex() { return mStartIndex; }

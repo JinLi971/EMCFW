@@ -65,6 +65,7 @@ void NodeInstructionData::deserialize()
         assert(mResult.get());
 
         mSerializer >> mResult->getSerializerRef();
+        mResult->deserialize();
     }
 }
 
@@ -81,6 +82,7 @@ Executor::ContextType NodeInstructionData::getContextType()
 void NodeInstructionData::setContextType(const Executor::ContextType type)
 {
     mContextType = type;
+    mContext = DataSet::Executor::ContextAndResultFactory::getContext(type);
 }
 
 Executor::IContext::ContextPtr &NodeInstructionData::getContextPtr()
@@ -96,6 +98,7 @@ Executor::ResultType NodeInstructionData::getResultType()
 void NodeInstructionData::setResultType(const Executor::ResultType type)
 {
     mResultType = type;
+    mResult = DataSet::Executor::ContextAndResultFactory::getResult(type);
 }
 
 Executor::IResult::ResultPtr &NodeInstructionData::getResultPtr()
@@ -103,12 +106,12 @@ Executor::IResult::ResultPtr &NodeInstructionData::getResultPtr()
     return mResult;
 }
 
-Node::INode::InstructionState NodeInstructionData::getInstruction()
+unsigned int NodeInstructionData::getInstruction()
 {
     return mInstruction;
 }
 
-void NodeInstructionData::setInstruction(const Node::INode::InstructionState cmd)
+void NodeInstructionData::setInstruction(const unsigned int cmd)
 {
     mInstruction = cmd;
 }

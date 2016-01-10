@@ -18,7 +18,7 @@ public:
     typedef std::shared_ptr<DataSet::Executor::IContext> ContextPtr;
     virtual ~IContext() {}
 
-    virtual ContextType getType() = 0;
+    virtual ContextType getType() const = 0;
 
     // ISerializable interface
 public:

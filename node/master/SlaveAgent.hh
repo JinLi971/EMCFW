@@ -20,7 +20,7 @@ protected:
 public:
     virtual int getTaskId() const { return mTaskId; }
     virtual void setTaskId(int value) { mTaskId = value; }
-    virtual const DataSet::Control::LoadSpec &getLoadSpec() { return mLoadSpec; }
+    virtual const DataSet::Control::LoadSpec &getLoadSpec() const { return mLoadSpec; }
     virtual void setLoadSpec(const DataSet::Control::LoadSpec &loadSpec);
     virtual void init();
     virtual void dispatchJob();

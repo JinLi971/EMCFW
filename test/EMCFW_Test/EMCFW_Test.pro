@@ -21,7 +21,8 @@ TEMPLATE = app
 
 SOURCES += main.cc \
     Serialization/TestSerialization.cc \
-    Mpi/TestMpiConnection.cc
+    Mpi/TestMpiConnection.cc \
+    Node/SlaveNodeTest.cc
 
 LIBS += -L$$PWD/../../../build-EMCFW-Desktop-Debug/ -lEMCFW
 LIBS += -L/usr/lib/ -lmpi
@@ -40,4 +41,6 @@ PRE_TARGETDEPS += /usr/local/lib/libgtest.a
 
 HEADERS += \
     Serialization/TestSerialization.hh \
-    Mpi/TestMpiConnection.hh
+    Mpi/TestMpiConnection.hh \
+    Node/SlaveNodeTest.hh \
+    DebugHelper.hh

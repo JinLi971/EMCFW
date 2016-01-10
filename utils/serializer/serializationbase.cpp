@@ -25,7 +25,7 @@ void SerializationBase::operator >>(std::string &value)
 
 void SerializationBase::operator <<(const SerializationBase &value)
 {
-    appendPackedString(value.getPackedString(), value.getTotalLength());
+    appendPackedString(value.getPackedString(), value.getSize());
 }
 
 void SerializationBase::operator >>(SerializationBase &value)
@@ -96,7 +96,7 @@ void SerializationBase::appendPackedString(const char *packedString, unsigned in
 
     mPackedBytes.push_back(content);
 
-    mTotalLength += length;
+    mTotalLength += length + SIZE_T_LENGTH;
 }
 
 void SerializationBase::appendPackedString(const char *packedString, unsigned int size)

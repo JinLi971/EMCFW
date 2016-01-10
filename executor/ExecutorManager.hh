@@ -2,6 +2,7 @@
 #define EXECUTORMANAGER_HH
 
 #include "IExecutor.hh"
+#include "dataset/executor/ExecutorType.hh"
 
 #include <vector>
 #include <list>
@@ -21,6 +22,7 @@ public:
     void destoryManager();
     void addExecutor(IExecutor *instance);
     bool getExecutor(IExecutable* callBackInstance);
+    int getSizeofExecutors(DataSet::Executor::ExecutorType type);
 
 public:
     static void handleExecutorStateChange(ExecutionState state,

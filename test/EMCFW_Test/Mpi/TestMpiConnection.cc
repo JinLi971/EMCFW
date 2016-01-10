@@ -58,7 +58,7 @@ void TestMpiConnection::compareResult(DataSet::Control::LoadSpec& expected,
     EXPECT_EQ (expected.getStartIndex(), actual.getStartIndex());
     EXPECT_EQ (expected.getEndIndex(), actual.getEndIndex());
 
-    const LoadSpec::GroupStruct& serializeGroup = expected.getGroup()[serializeGroup.color];
+    const LoadSpec::GroupStruct& serializeGroup = expected.getGroup()[1];
     const LoadSpec::GroupStruct& afterGroup = actual.getGroup()[serializeGroup.color];
 
     EXPECT_EQ (serializeGroup.cluster.size(), afterGroup.cluster.size());

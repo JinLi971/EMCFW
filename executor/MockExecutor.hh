@@ -16,6 +16,7 @@ class MockExecutor : public IExecutor
 {
 public:
     MockExecutor();
+    virtual ~MockExecutor() {}
 
     // IExecutor interface
 public:

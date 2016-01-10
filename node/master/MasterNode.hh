@@ -20,7 +20,7 @@ public:
     virtual void init();
     virtual void loadData();
     virtual void dispatchJob();
-    virtual const DataSet::Control::LoadSpec &getLoadSpec();
+    virtual const DataSet::Control::LoadSpec &getLoadSpec() const;
     virtual void setLoadSpec(const DataSet::Control::LoadSpec &loadSpec);
     virtual void start();
     virtual void stop(int taskId);

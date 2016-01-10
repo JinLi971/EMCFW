@@ -70,6 +70,8 @@ public:
         {
             barrier();
         }
+
+        data->getSerializerRef().clearContent();
     }
 
     virtual void sync(int dest = -1,

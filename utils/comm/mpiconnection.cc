@@ -5,7 +5,7 @@
 
 MpiConnection::MpiConnection()
 {
-
+    mComm = 0;
 }
 
 
@@ -86,7 +86,7 @@ void MpiConnection::barrier()
 
 void MpiConnection::setCommunicator(void *communicator)
 {
-    assert(mComm != NULL);
+    assert(communicator != NULL);
     mComm = static_cast<MPI_Comm*>(communicator);
 }
 

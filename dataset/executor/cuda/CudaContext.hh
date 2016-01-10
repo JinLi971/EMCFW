@@ -17,7 +17,7 @@ public:
 
     // IContext interface
 public:
-    virtual ContextType getType();
+    virtual ContextType getType() const;
 
     // ISerializable interface
 public:

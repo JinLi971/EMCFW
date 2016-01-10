@@ -31,6 +31,7 @@ void GroupHelpers::constructGroup(DataSet::Control::LoadSpec &loadSpec, int task
         assert(retVal == MPI_SUCCESS);
 
         MPI_Group_rank(group.group, &(group.taskId));
+        ++iter;
     }
 }
 

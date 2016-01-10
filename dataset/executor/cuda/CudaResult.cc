@@ -13,7 +13,7 @@ CudaResult::CudaResult()
 {
 }
 
-ResultType CudaResult::getType()
+ResultType CudaResult::getType() const
 {
     return CUDA_RESULT;
 }

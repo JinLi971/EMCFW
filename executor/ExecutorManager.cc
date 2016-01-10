@@ -13,12 +13,11 @@ ExecutorManager::ExecutorManager()
 
 ExecutorManager::~ExecutorManager()
 {
-
 }
 
 ExecutorManager *ExecutorManager::getInstance()
 {
-    if(mInstance.get() != nullptr)
+    if(mInstance.get() == nullptr)
     {
         mInstance.reset(new ExecutorManager());
     }
@@ -28,7 +27,8 @@ ExecutorManager *ExecutorManager::getInstance()
 void ExecutorManager::destoryManager()
 {
     destory();
-    mInstance->~ExecutorManager();
+    // This will call deconstructor
+    mInstance = nullptr;
 }
 
 void ExecutorManager::destory()
@@ -60,7 +60,7 @@ void ExecutorManager::destory()
 
     if(retryTimes == DataSet::RETRY_LIMIT)
     {
-        fprintf(stderr, "FAILED to stop [%d] executors, force delete, may have memory leak!\n", mList.size());
+        fprintf(stderr, "FAILED to stop [%zu] executors, force delete, may have memory leak!\n", mList.size());
     }
 
     mList.erase(mList.begin(), mList.end());
@@ -169,6 +169,18 @@ bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
     mMutex.unlock();
 
     return false;
+}
+
+int ExecutorManager::getSizeofExecutors(ExecutorType type)
+{
+    int count = 0;
+    for(unsigned int i = 0; i < mList.size(); ++ i)
+    {
+        if(mList[i]->getType() == type)
+            count ++;
+    }
+
+    return count;
 }
 
 

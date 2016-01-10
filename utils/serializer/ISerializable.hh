@@ -9,6 +9,7 @@
 class ISerializable
 {
 public:
+    virtual ~ISerializable() {}
     virtual void serialize() = 0;
     virtual void deserialize() = 0;
 

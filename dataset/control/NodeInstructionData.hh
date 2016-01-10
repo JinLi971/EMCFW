@@ -29,8 +29,8 @@ public:
     virtual void setResultType(const Executor::ResultType type);
     virtual Executor::IResult::ResultPtr &getResultPtr();
 
-    virtual Node::INode::InstructionState getInstruction();
-    virtual void setInstruction(const Node::INode::InstructionState cmd);
+    virtual unsigned int getInstruction();
+    virtual void setInstruction(const unsigned int cmd);
 
 private:
     Executor::IContext::ContextPtr mContext;
@@ -39,7 +39,7 @@ private:
     Executor::ContextType mContextType;
     Executor::ResultType mResultType;
 
-    Node::INode::InstructionState mInstruction;
+    unsigned int mInstruction;
 };
 
 }
