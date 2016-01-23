@@ -1,5 +1,6 @@
 #include "MockExecutor.hh"
 #include <stdio.h>
+#include "executor/ExecutorManager.hh"
 
 namespace Executor
 {
@@ -13,20 +14,21 @@ MockExecutor::MockExecutor()
 
 bool MockExecutor::init()
 {
-    printf("Executor in Init\n");
+    //printf("Executor in Init\n");
     mExecState = WAITING;
     return mReturnVal;
 }
 
 void MockExecutor::start()
 {
-    printf("Executor in Start\n");
+    //printf("Executor in Start\n");
     mExecState = RUNNING;
+    mResult.setTestData("MockExecutor Setting Result");
 }
 
-void MockExecutor::abort()
+void MockExecutor::stop()
 {
-    printf("Executor aborted!\n");
+    //printf("Executor aborted!\n");
     mExecState = STOPPED;
 }
 
@@ -43,6 +45,12 @@ IResult::ResultPtr MockExecutor::getResult()
 ExecutorType MockExecutor::getType()
 {
     return MOCK;
+}
+
+void MockExecutor::resetToIdle()
+{
+    mExecState = IDLE;
+    Executor::ExecutorManager::getInstance()->handleExecutorStateChange(mExecState, mId);
 }
 
 void MockExecutor::setResult(IResult::ResultPtr &result)

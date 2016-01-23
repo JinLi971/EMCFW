@@ -1,4 +1,5 @@
 #include "CudaExecutor.hh"
+#include "executor/ExecutorManager.hh"
 
 namespace Executor
 {
@@ -22,7 +23,7 @@ void CudaExecutor::start()
     mExecState = RUNNING;
 }
 
-void CudaExecutor::abort()
+void CudaExecutor::stop()
 {
     mExecState = STOPPED;
 }
@@ -45,6 +46,12 @@ ExecutorType CudaExecutor::getType()
 void CudaExecutor::setResult(IResult::ResultPtr &result)
 {
 
+}
+
+void CudaExecutor::resetToIdle()
+{
+    mExecState = IDLE;
+    Executor::ExecutorManager::getInstance()->handleExecutorStateChange(mExecState, mId);
 }
 
 

@@ -18,9 +18,7 @@ public:
     LoadSpec(const std::string& configFilePath,
                int startIndex,
                int endIndex,
-               const int controlId,
-               const Executor::ExecutorType execType,
-               const std::vector<int>& nodeCluster);
+               const Executor::ExecutorType execType);
 
     LoadSpec();
 
@@ -66,9 +64,6 @@ public:
     int getEndIndex() { return mEndIndex; }
     void setEndIndex(int value) { mEndIndex = value; }
 
-    int getControlId() { return mControlId; }
-    void setControlId(int value) { mControlId = value; }
-
     int *getNodeCluster(int groupId) {
         if(!mGroup.count(groupId))
             return NULL;
@@ -92,19 +87,44 @@ public:
         return mGroup[groupColor].taskId;
     }
 
+    int getGroupController(int groupColor) {
+        if(!mGroup.count(groupColor))
+            // Fall back to Use Root as Controller
+            return 0;
+
+        return mGroup[groupColor].controller;
+    }
+
+    const GroupStruct& getGroupStruct(int color) const
+    {
+        return mGroup.at(color);
+    }
+
+    MPI_Comm *getGroupComm(int color)
+    {
+        if(!mGroup.count(color))
+            return nullptr;
+
+        return &mGroup[color].comm;
+    }
+
+    int getDefaultGroup() const;
+    void setDefaultGroup(int value);
+
 protected:
     std::string mConfigFilePath;
     int mStartIndex;
     int mEndIndex;
-    int mControlId;
     int mSmallIterationTime;
     Executor::ExecutorType mExecutorType;
     std::map<int, GroupStruct> mGroup;
+    int mDefaultGroup;
 
     // ISerializable interface
 public:
     void serialize();
     void deserialize();
+
 };
 
 }

@@ -32,6 +32,9 @@ public:
     virtual unsigned int getInstruction();
     virtual void setInstruction(const unsigned int cmd);
 
+    unsigned int getReportColor() const;
+    void setReportColor(unsigned int value);
+
 private:
     Executor::IContext::ContextPtr mContext;
     Executor::IResult::ResultPtr mResult;
@@ -40,6 +43,7 @@ private:
     Executor::ResultType mResultType;
 
     unsigned int mInstruction;
+    unsigned int mReportColor;
 };
 
 }

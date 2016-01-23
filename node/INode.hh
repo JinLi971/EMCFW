@@ -22,7 +22,7 @@ public:
         STARTED,
         RUNNING,
         STOPPED,
-        DESTORIED
+        DESTROIED
     };
 
     enum InstructionState
@@ -30,8 +30,9 @@ public:
         DIE = 0x0001,
         NEW_CONTEXT = 0x0002,
         NEW_RESULT = 0x0004,
-        START = 0x0008
-        // Next 0x000010
+        START = 0x0008,
+        REPORT = 0x0010
+        // Next 0x000020
     };
 
     virtual int getTaskId() const = 0;

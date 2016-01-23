@@ -20,21 +20,22 @@ public:
     ~ExecutorManager();
 
     void destoryManager();
-    void addExecutor(IExecutor *instance);
+    void addExecutor(IExecutor::IExecutorPtr &instance);
     bool getExecutor(IExecutable* callBackInstance);
     int getSizeofExecutors(DataSet::Executor::ExecutorType type);
 
+    std::vector<IExecutor::IExecutorPtr>& getExecutorVectorRef() { return mList; }
+
 public:
-    static void handleExecutorStateChange(ExecutionState state,
-                                          IExecutor *instance,
-                                          void* handler);
+    void handleExecutorStateChange(ExecutionState state,
+                                          int id);
 
 
 protected:
-    void dispatchJob(IExecutor *instance);
+    void dispatchJob(IExecutor::IExecutorPtr &instance);
 
 private:
-    std::vector<IExecutor*> mList;
+    std::vector<IExecutor::IExecutorPtr> mList;
     std::list<IExecutable*> mRequestQueue;
     std::mutex mMutex;
     std::mutex mDispatchMutex;

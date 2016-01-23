@@ -35,10 +35,10 @@ void SlaveNode::SetUp()
     result->setTestData("Mock Result Data");
 
     mTestSpec.setConfigFilePath("./Test.conf");
-    mTestSpec.setControlId(0);
     mTestSpec.setStartIndex(0);
+    mTestSpec.setDefaultGroup(0);
     mTestSpec.setEndIndex(100);
-    mTestSpec.setSmallIterationTime(100);
+    mTestSpec.setSmallIterationTime(10000);
     mTestSpec.setExecutorType(DataSet::Executor::MOCK);
 
     std::map<int, LoadSpec::GroupStruct>& beforeGroup = mTestSpec.getGroup();
@@ -102,13 +102,14 @@ void SlaveNode::testCmd()
         for(int i = 1; i < mSize; i ++)
         {
             mCmd.setInstruction(Node::INode::NEW_CONTEXT | Node::INode::NEW_RESULT);
-            mConnection.setMode(IComm::SEND);
+            mConnection.setMode(IComm::SSEND);
             mConnection.setData(&mCmd);
             mConnection.sync(i);
 
             mCmd.setInstruction(Node::INode::DIE);
             mConnection.setData(&mCmd);
             mConnection.sync(i);
+
         }
     } else
     {
@@ -119,6 +120,67 @@ void SlaveNode::testCmd()
         EXPECT_TRUE(node->getContext()->getType() == MOCK_CONTEXT);
         EXPECT_EQ("Mock Result Data", ((DataSet::Executor::MockResult *)node->getResultRef().get())->getTestData());
         EXPECT_EQ("Mock Context Data", ((DataSet::Executor::MockContext *)node->getContextRef().get())->getTestData());
+        //EXPECT_TRUE(Executor::ExecutorManager::getInstance()->getSizeofExecutors(DataSet::Executor::MOCK) == 0);
+    }
+}
+
+void SlaveNode::testSingleThreadStart()
+{
+    // This is a mpi test
+
+    if(mSize <= 1) return;
+    testLoadData();
+
+    if(mTaskId == 0)
+    {
+        // Root node will send out cmd
+        // First set the context and result
+        // And then die
+        for(int i = 1; i < mSize; i ++)
+        {
+            mCmd.setInstruction(Node::INode::NEW_CONTEXT | Node::INode::NEW_RESULT);
+            mConnection.setMode(IComm::SSEND);
+            mConnection.setData(&mCmd);
+            mConnection.sync(i);
+
+
+            mCmd.setInstruction(Node::INode::START);
+            mConnection.setData(&mCmd);
+            mConnection.sync(i);
+        }
+
+        for(int i = 1; i < mSize; i ++)
+        {
+            mCmd.setInstruction(Node::INode::REPORT);
+            mConnection.setMode(IComm::SSEND);
+            mConnection.setData(&mCmd);
+            mConnection.sync(i);
+
+            DataSet::Executor::MockResult result;
+            mConnection.setMode(IComm::REC);
+            mConnection.setData(&result);
+            mConnection.sync(-1, -1, i, false);
+
+            EXPECT_EQ("MockExecutor Setting Result", result.getTestData());
+        }
+
+        for(int i = 1; i < mSize; i ++)
+        {
+            mCmd.setInstruction(Node::INode::DIE);
+            mConnection.setMode(IComm::SSEND);
+            mConnection.setData(&mCmd);
+            mConnection.sync(i);
+        }
+    } else
+    {
+        mNode->start();
+
+        // The result should be set as "MockExecutor Setting Result"
+        Node::Slave::SlaveNode* node = dynamic_cast<Node::Slave::SlaveNode*>(mNode);
+        EXPECT_TRUE(node->getResult()->getType() == MOCK_RESULT);
+        EXPECT_TRUE(node->getContext()->getType() == MOCK_CONTEXT);
+        EXPECT_EQ("MockExecutor Setting Result", ((DataSet::Executor::MockResult *)node->getResultRef().get())->getTestData());
+        EXPECT_EQ("Mock Context Data", ((DataSet::Executor::MockContext *)node->getContextRef().get())->getTestData());
         EXPECT_TRUE(Executor::ExecutorManager::getInstance()->getSizeofExecutors(DataSet::Executor::MOCK) == 0);
     }
 }
@@ -126,6 +188,10 @@ void SlaveNode::testCmd()
 void SlaveNode::TearDown()
 {
     mNode->destory();
+    mCmd.getResultPtr().reset();
+    mCmd.getContextPtr().reset();
+    mConnection.setCommunicator(&mComm);
+    mConnection.barrier();
 }
 
 TEST_F(SlaveNode, testCloneCopy)
@@ -141,4 +207,9 @@ TEST_F(SlaveNode, testLoadData)
 TEST_F(SlaveNode, testSetAndKill)
 {
     testCmd();
+}
+
+TEST_F(SlaveNode, testSingleThreadStart)
+{
+    testSingleThreadStart();
 }

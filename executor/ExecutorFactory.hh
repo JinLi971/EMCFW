@@ -2,6 +2,7 @@
 #define EXECUTORFACTORY_HH
 
 #include "dataset/executor/ExecutorType.hh"
+#include "IExecutor.hh"
 
 class IExecutor;
 
@@ -11,9 +12,10 @@ namespace Executor
 class ExecutorFactory
 {
 public:
-    ExecutorFactory();
+    static IExecutor::IExecutorPtr getExecutor(DataSet::Executor::ExecutorType type);
 
-    static IExecutor *getExecutor(DataSet::Executor::ExecutorType type);
+private:
+    ExecutorFactory();
 };
 
 }

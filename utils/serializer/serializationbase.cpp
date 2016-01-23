@@ -20,6 +20,7 @@ void SerializationBase::operator >>(std::string &value)
     value.assign(mPackedBytes.front()->content);
 
     mTotalLength -= (SIZE_T_LENGTH + mPackedBytes.front()->length);
+    delete mPackedBytes.front();
     mPackedBytes.pop_front();
 }
 
@@ -38,10 +39,10 @@ void SerializationBase::operator >>(SerializationBase &value)
 
 const char* SerializationBase::getPackedString() const
 {
-    char* packed = new char[mTotalLength + sizeof(mTotalLength)];
+    char* packed = new char[mTotalLength + SIZE_T_LENGTH];
 
-    memmove(&(packed[0]), &mTotalLength, sizeof(mTotalLength));
-    size_t currentPtr = sizeof(mTotalLength);
+    memmove(&(packed[0]), &mTotalLength, SIZE_T_LENGTH);
+    size_t currentPtr = SIZE_T_LENGTH;
     for(size_t i = 0; i < mPackedBytes.size(); i ++)
     {
         memmove(&(packed[currentPtr]), &(mPackedBytes.at(i)->length), SIZE_T_LENGTH);
@@ -57,8 +58,7 @@ const char* SerializationBase::getPackedString() const
 void SerializationBase::setPackedString(const char *packedString, int offset)
 {
     offset < 0 ? offset = 0 : offset;
-    mPackedBytes.clear();
-    mTotalLength = -1;
+    clearContent();
 
     memmove(&mTotalLength, packedString + offset, sizeof(mTotalLength));
 
@@ -112,17 +112,17 @@ int SerializationBase::getTotalLength() const
 
 void SerializationBase::clearContent()
 {
-    mTotalLength = 0;
 
     std::deque<SerializeContent *>::iterator iter = mPackedBytes.begin();
 
     while(iter != mPackedBytes.end())
     {
+        mTotalLength -= (SIZE_T_LENGTH + (*iter)->length);
         delete *iter;
-        iter ++;
+        (*iter) = nullptr;
+        iter = mPackedBytes.erase(iter);
     }
 
-    mPackedBytes.clear();
 
     assert(mPackedBytes.size() == 0);
     assert(mTotalLength == 0);
@@ -133,7 +133,6 @@ SerializationBase::SerializationBase()
       SIZE_T_LENGTH(sizeof(size_t)),
       mTotalLength(0)
 {
-
 }
 
 SerializationBase::SerializationBase(SerializerTypeId typeId)
@@ -141,7 +140,6 @@ SerializationBase::SerializationBase(SerializerTypeId typeId)
       SIZE_T_LENGTH(sizeof(size_t)),
       mTotalLength(0)
 {
-
 }
 
 SerializationBase::~SerializationBase()
@@ -149,6 +147,7 @@ SerializationBase::~SerializationBase()
     for(unsigned int i = 0; i < mPackedBytes.size(); ++ i)
     {
         delete mPackedBytes[i];
+        mPackedBytes[i] = nullptr;
     }
     mPackedBytes.clear();
 }

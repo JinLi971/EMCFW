@@ -31,13 +31,13 @@ public:
                 broadcast(data, root);
                 break;
             }
-            case SEND:
+            case SSEND:
             {
                 if (dest == mRank)
                     break;
 
                 assert (dest >= 0);
-                send(data, dest);
+                ssend(data, dest);
                 break;
             }
             case REC:
@@ -93,7 +93,7 @@ protected:
     std::vector<ISerializable* > *mVectorDataPtr;
 
 protected:
-    virtual void send(ISerializable* data, int dest) = 0;
+    virtual void ssend(ISerializable* data, int dest) = 0;
     virtual void rec(int source, ISerializable *data) = 0;
     virtual void rec(ISerializable *data) = 0;
     virtual void broadcast(ISerializable* data, int root) = 0;

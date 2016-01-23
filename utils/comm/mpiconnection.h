@@ -12,7 +12,7 @@ class MpiConnection : public IComm
 public:
    MpiConnection();
 
-   virtual void send(ISerializable *data, int dest);
+   virtual void ssend(ISerializable *data, int dest);
    virtual void rec(int source, ISerializable *data);
    virtual void rec(ISerializable *data);
    virtual void broadcast(ISerializable *data, int root);

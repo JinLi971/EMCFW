@@ -10,14 +10,12 @@ namespace Control
 LoadSpec::LoadSpec(const std::string &configFilePath,
                int startIndex,
                int endIndex,
-               const int controlId,
-               const Executor::ExecutorType execType,
-               const std::vector<int> &nodeCluster)
+               const Executor::ExecutorType execType)
     : mConfigFilePath(configFilePath),
       mStartIndex(startIndex),
       mEndIndex(endIndex),
-      mControlId(controlId),
-      mExecutorType(execType)
+      mExecutorType(execType),
+      mDefaultGroup(-1)
 {
     mClassId = GlobalClassId::LOAD_SPEC;
 }
@@ -25,13 +23,20 @@ LoadSpec::LoadSpec(const std::string &configFilePath,
 LoadSpec::LoadSpec()
     : mConfigFilePath(""),
       mStartIndex(-1),
-      mEndIndex(-1),
-      mControlId(-1),
       mExecutorType(Executor::NONE)
 {
     mClassId = GlobalClassId::LOAD_SPEC;
 }
 
+int LoadSpec::getDefaultGroup() const
+{
+    return mDefaultGroup;
+}
+
+void LoadSpec::setDefaultGroup(int value)
+{
+    mDefaultGroup = value;
+}
 
 void LoadSpec::serialize()
 {
@@ -39,7 +44,6 @@ void LoadSpec::serialize()
     mSerializer << mConfigFilePath;
     mSerializer << mStartIndex;
     mSerializer << mEndIndex;
-    mSerializer << mControlId;
     mSerializer << (int)mExecutorType;
 
     // push in size of the node group
@@ -71,7 +75,6 @@ void LoadSpec::deserialize()
     mSerializer >> mConfigFilePath;
     mSerializer >> mStartIndex;
     mSerializer >> mEndIndex;
-    mSerializer >> mControlId;
 
     int tmpExecutorType = -1;
     mSerializer >> tmpExecutorType;

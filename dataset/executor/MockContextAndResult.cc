@@ -29,6 +29,7 @@ const std::string &MockContext::getTestData() const
 
 void MockContext::serialize()
 {
+    mSerializer.clearContent();
     mSerializer << GlobalClassId::MOCK_CONTEXT;
     mSerializer << mTestString;
 }
@@ -39,6 +40,8 @@ void MockContext::deserialize()
     assert(mClassId == GlobalClassId::MOCK_CONTEXT);
 
     mSerializer >> mTestString;
+
+    assert(mSerializer.getTotalLength() == 0);
 }
 
 GlobalClassId::ClassId MockContext::getClassId()
@@ -68,6 +71,7 @@ const std::string &MockResult::getTestData() const
 
 void MockResult::serialize()
 {
+    mSerializer.clearContent();
     mSerializer << GlobalClassId::MOCK_RESULT;
     mSerializer << mTestString;
 }
@@ -78,6 +82,8 @@ void MockResult::deserialize()
     assert(mClassId == GlobalClassId::MOCK_RESULT);
 
     mSerializer >> mTestString;
+
+    assert(mSerializer.getTotalLength() == 0);
 }
 
 GlobalClassId::ClassId MockResult::getClassId()

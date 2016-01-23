@@ -8,7 +8,7 @@ public:
     {
         IDLE = 0,
         BROADCAST,
-        SEND,
+        SSEND,
         REC,
         GATHER_ROOT,
         GATHER_CLIENT

@@ -32,9 +32,8 @@ void EvenDispatcher::apply()
     LoadSpec slaveSpec (mConf.dataFileDir,
                         mConf.dataStartIndex,
                         mConf.dataEndIndex,
-                        mMasterNode.getTaskId(),
-                        DataSet::Executor::CUDA,
-                        nodeCluster);
+                        DataSet::Executor::CUDA);
+    slaveSpec.setDefaultGroup(0);
 
     for (int i = 0; i < mSlaveList.size(); ++ i)
     {

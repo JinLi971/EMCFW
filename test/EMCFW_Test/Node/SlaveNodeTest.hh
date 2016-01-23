@@ -18,6 +18,7 @@ public:
     void testSpecDeepCopy();
     void testLoadData();
     void testCmd();
+    void testSingleThreadStart();
 private:
     MpiConnection mConnection;
     Node::INode* mNode;

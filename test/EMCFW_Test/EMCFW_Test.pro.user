@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.0.1, 2016-01-10T20:47:42. -->
+<!-- Written by QtCreator 3.0.1, 2016-01-23T13:55:42. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -213,7 +213,7 @@
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes">
      <value type="QString">LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/lib/:/home/gang/dev/src/emc/EMCFW/test/EMCFW_Test/../../../build-EMCFW-Desktop-Debug/</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-n 10 %{buildDir}/EMCFW_Test</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-n 50 %{buildDir}/EMCFW_Test --gtest_filter=*</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">mpirun</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>

@@ -20,11 +20,11 @@ IContext::ContextPtr ContextAndResultFactory::getContext(ContextType type)
     {
         case MOCK_CONTEXT:
         {
-            return IContext::ContextPtr(new MockContext());
+            return std::make_shared<MockContext>();
         }
         case CUDA_CONTEXT:
         {
-            return IContext::ContextPtr(new Cuda::CudaContext());
+            return std::make_shared<Cuda::CudaContext>();
         }
         default:
             return IContext::ContextPtr(NULL);
@@ -37,11 +37,11 @@ IResult::ResultPtr ContextAndResultFactory::getResult(ResultType type)
     {
         case MOCK_RESULT:
         {
-            return IResult::ResultPtr(new MockResult());
+            return std::make_shared<MockResult>();
         }
         case CUDA_RESULT:
         {
-            return IResult::ResultPtr(new Cuda::CudaResult());
+            return std::make_shared<Cuda::CudaResult>();
         }
         default:
             return IResult::ResultPtr(NULL);

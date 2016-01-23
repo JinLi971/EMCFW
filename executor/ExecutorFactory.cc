@@ -1,5 +1,4 @@
 #include "ExecutorFactory.hh"
-#include "IExecutor.hh"
 #include "executor/cuda/CudaExecutor.hh"
 #include "executor/MockExecutor.hh"
 
@@ -11,20 +10,20 @@ ExecutorFactory::ExecutorFactory()
 }
 
 
-IExecutor *ExecutorFactory::getExecutor(DataSet::Executor::ExecutorType type)
+IExecutor::IExecutorPtr ExecutorFactory::getExecutor(DataSet::Executor::ExecutorType type)
 {
     switch(type)
     {
         case CUDA:
         {
-            return new Cuda::CudaExecutor();
+            return std::make_shared<Cuda::CudaExecutor>();
         }
         case MOCK:
         {
-            return new Mock::MockExecutor();
+            return std::make_shared<Mock::MockExecutor>();
         }
         default:
-            return 0;
+            return IExecutor::IExecutorPtr();
     }
 }
 

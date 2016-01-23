@@ -51,20 +51,27 @@ protected:
     MpiConnection mConnection;
     DataSet::Executor::IContext::ContextPtr mContext;
     DataSet::Executor::IResult::ResultPtr mResult;
-    std::unique_ptr<IExecutor> mExecutor;
+    IExecutor::IExecutorPtr mExecutor;
     DataSet::Control::NodeInstructionData mCmd;
+    int mControlId;
+    MPI_Comm mMpiWorldComm;
 
 
     // IExecutable interface
 public:
-    virtual bool readyExecutor(IExecutor *instance);
+    virtual bool readyExecutor(IExecutor::IExecutorPtr &instance);
     virtual ExecutorType getRequiredExecutorType();
+
+    int getControlId() const;
+    void setControlId(int value);
 
 private:
     void prepareExecutor();
     void reportResultToClusterHead();
     void startJob();
     void cleanResource();
+
+
 };
 
 }

@@ -21,11 +21,12 @@ public:
 public:
     virtual bool init();
     virtual void start();
-    virtual void abort();
+    virtual void stop();
     virtual void setContext(const IContext::ContextPtr &context);
     virtual IResult::ResultPtr getResult();
     virtual ExecutorType getType();
     virtual void setResult(IResult::ResultPtr &result);
+    virtual void resetToIdle();
 };
 
 }

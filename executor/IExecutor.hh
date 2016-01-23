@@ -22,15 +22,11 @@ using namespace DataSet::Executor;
 class IExecutor
 {
 public:
+    typedef std::shared_ptr<IExecutor> IExecutorPtr;
     virtual ~IExecutor() {}
-    typedef void (* NotifyState)(Executor::ExecutionState,
-                                 IExecutor*,
-                                 void*);
 
 public:
-    virtual void resetToIdle() {
-        mExecState = Executor::IDLE;
-    }
+    virtual void resetToIdle() = 0;
 
     virtual bool init() = 0;
     virtual void start() = 0;
@@ -38,21 +34,17 @@ public:
         return mExecState;
     }
 
-    virtual void abort() = 0;
+    virtual void stop() = 0;
 
+    // Ideally the executor should do a deep copy of the Context object
+    // So that, the Context will be isolated with executor itself,
+    // NO influence to other running executor lauched by SlaveNode
     virtual void setContext(const IContext::ContextPtr& context) = 0;
+    // Ideally the executor should do a deep copy of the Result object
+    // So that, the Result will be isolated with executor itself,
+    // NO influence to other running executor lauched by SlaveNode
     virtual void setResult(IResult::ResultPtr& result) = 0;
     virtual IResult::ResultPtr getResult() = 0;
-
-    virtual void setNotifyHandler(NotifyState funPtr, void* handler) {
-        mStateHandler = handler;
-        mStateFunPtr = funPtr;
-    }
-
-    virtual NotifyState getNotifyHanlder(void* handler) {
-        handler = mStateHandler;
-        return mStateFunPtr;
-    }
 
     virtual void reserve() {
         mExecState = Executor::RESERVED;
@@ -60,15 +52,13 @@ public:
 
     virtual ExecutorType getType() = 0;
 
-protected:
-    virtual void fireStateChange() {
-        (*mStateFunPtr)(mExecState, this, mStateHandler);
-    }
+    void setId(int id) { mId = id; }
+
+    int getId() const { return mId; }
 
 protected:
     Executor::ExecutionState mExecState;
-    NotifyState mStateFunPtr;
-    void* mStateHandler;
+    unsigned int mId;
 };
 
 #endif // IEXECUTOR_HH

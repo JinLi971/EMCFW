@@ -123,6 +123,7 @@ protected:
       memmove(value, mPackedBytes.front()->content, sizeof(*value));
 
       mTotalLength -= (SIZE_T_LENGTH + mPackedBytes.front()->length);
+      delete mPackedBytes.front();
       mPackedBytes.pop_front();
    }
 };

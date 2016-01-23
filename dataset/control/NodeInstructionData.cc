@@ -15,6 +15,7 @@ NodeInstructionData::NodeInstructionData()
 
 void NodeInstructionData::serialize()
 {
+    mSerializer.clearContent();
     mSerializer << GlobalClassId::NODE_INSTRUCTION;
     mSerializer << mInstruction;
     mSerializer << mContextType;
@@ -32,6 +33,8 @@ void NodeInstructionData::serialize()
         mResult->serialize();
         mSerializer << mResult->getSerializer();
     }
+
+    mSerializer << mReportColor;
 }
 
 void NodeInstructionData::deserialize()
@@ -67,6 +70,10 @@ void NodeInstructionData::deserialize()
         mSerializer >> mResult->getSerializerRef();
         mResult->deserialize();
     }
+
+    mSerializer >> mReportColor;
+
+    assert(mSerializer.getTotalLength() == 0);
 }
 
 GlobalClassId::ClassId NodeInstructionData::getClassId()
@@ -115,8 +122,15 @@ void NodeInstructionData::setInstruction(const unsigned int cmd)
 {
     mInstruction = cmd;
 }
+unsigned int NodeInstructionData::getReportColor() const
+{
+    return mReportColor;
+}
 
-
+void NodeInstructionData::setReportColor(unsigned int value)
+{
+    mReportColor = value;
+}
 
 }
 }

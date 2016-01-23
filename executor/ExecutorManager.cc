@@ -2,6 +2,8 @@
 
 #include "IExecutable.hh"
 #include "dataset/Constants.hh"
+#include <cassert>
+
 namespace Executor
 {
 
@@ -37,19 +39,21 @@ void ExecutorManager::destory()
     while (retryTimes < DataSet::RETRY_LIMIT)
     {
         bool running = false;
-        std::vector<IExecutor*>::iterator iter = mList.begin();
+        std::vector<IExecutor::IExecutorPtr>::iterator iter = mList.begin();
         while(iter != mList.end())
         {
-            (*iter)->abort();
+            IExecutor::IExecutorPtr& ele = *iter;
+            assert(ele.use_count() == 1);
+            ele->stop();
             if((*iter)->getExecutionState() == STOPPED)
             {
-                delete (*iter);
+                ele.reset();
                 iter = mList.erase(iter);
                 continue;
             }
-
-            ++ iter;
             running = true;
+            ++ iter;
+
         }
 
         if (!running)
@@ -67,24 +71,23 @@ void ExecutorManager::destory()
 }
 
 
-void ExecutorManager::addExecutor(IExecutor* instance)
+void ExecutorManager::addExecutor(IExecutor::IExecutorPtr &instance)
 {
-    instance->setNotifyHandler(&ExecutorManager::handleExecutorStateChange, this);
+    std::lock_guard<std::mutex> lock(mMutex);
     mList.push_back(instance);
+    instance->setId(mList.size() - 1);
 }
 
 void ExecutorManager::handleExecutorStateChange(ExecutionState state,
-                                                IExecutor* instance,
-                                                void* handler)
+                                                int id)
 {
-    ExecutorManager *self = static_cast<ExecutorManager *>(handler);
     switch(state)
     {
     case IDLE:
     case ERROR:
     case STOPPED:
     {
-        self->dispatchJob(instance);
+        dispatchJob(mList[id]);
         break;
     }
     default:
@@ -94,14 +97,15 @@ void ExecutorManager::handleExecutorStateChange(ExecutionState state,
     }
 }
 
-void ExecutorManager::dispatchJob(IExecutor* instance)
+void ExecutorManager::dispatchJob(IExecutor::IExecutorPtr &instance)
 {
     if(mRequestQueue.empty())
     {
         return;
     }
 
-    mDispatchMutex.lock();
+
+    std::lock_guard<std::mutex> lock(mDispatchMutex);
 
     std::list<IExecutable*>::iterator iter = mRequestQueue.begin();
 
@@ -115,19 +119,17 @@ void ExecutorManager::dispatchJob(IExecutor* instance)
             if(callback->readyExecutor(instance))
             {
                 mRequestQueue.erase(iter);
-                mDispatchMutex.unlock();
                 return;
             }
         }
 
         ++iter;
     }
-
-    mDispatchMutex.unlock();
 }
 
 bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
 {
+    std::lock_guard<std::mutex> lock(mDispatchMutex);
     std::list<IExecutable*>::iterator iter = mRequestQueue.begin();
 
     while(iter != mRequestQueue.end())
@@ -135,16 +137,12 @@ bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
         IExecutable* waitingEle = *iter;
         if(waitingEle->getRequiredExecutorType() == callBackInstance->getRequiredExecutorType())
         {
-            mMutex.lock();
             mRequestQueue.push_back(callBackInstance);
-            mMutex.unlock();
             return true;
         }
 
         ++ iter;
     }
-
-    mMutex.lock();
 
     for(unsigned int i = 0; i < mList.size(); ++ i)
     {
@@ -152,11 +150,10 @@ bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
             continue;
 
         ExecutionState state = mList[i]->getExecutionState();
-        if(state == IDLE || state == ERROR || state == STOPPED)
+        if(state == IDLE || state == ERROR || state == STOPPED || state == WAITING)
         {
             if(callBackInstance->readyExecutor(mList[i]))
             {
-                mMutex.unlock();
                 return true;
             }
         }
@@ -165,9 +162,6 @@ bool ExecutorManager::getExecutor(IExecutable *callBackInstance)
     // No executor available for now
     // Put into waiting queue
     mRequestQueue.push_back(callBackInstance);
-
-    mMutex.unlock();
-
     return false;
 }
 

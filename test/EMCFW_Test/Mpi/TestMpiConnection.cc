@@ -23,7 +23,6 @@ void TestMpiConnection::SetUp()
     mAfterSend.getSerializerRef().clearContent();
 
     mBeforeSend.setConfigFilePath("/tmp/fakedPath.conf");
-    mBeforeSend.setControlId(1);
     mBeforeSend.setStartIndex(1);
     mBeforeSend.setEndIndex(100);
 
@@ -54,7 +53,6 @@ void TestMpiConnection::compareResult(DataSet::Control::LoadSpec& expected,
                                       DataSet::Control::LoadSpec& actual)
 {
     EXPECT_EQ (expected.getConfigFilePath().compare(actual.getConfigFilePath()), 0);
-    EXPECT_EQ (expected.getControlId(), actual.getControlId());
     EXPECT_EQ (expected.getStartIndex(), actual.getStartIndex());
     EXPECT_EQ (expected.getEndIndex(), actual.getEndIndex());
 
@@ -74,16 +72,29 @@ void TestMpiConnection::testBasicSendRecv()
 {
     if (mTaskId == 0)
     {
-        mConnection.setMode(IComm::SEND);
-        mConnection.setData(&mBeforeSend);
-        mConnection.sync(mTaskId + 1);
-    }
+        for(int i = 1; i < mSize; ++i)
+        {
+            mConnection.setMode(IComm::SSEND);
+            mConnection.setData(&mBeforeSend);
+            mBeforeSend.setEndIndex(i);
+            mConnection.sync(i);
 
-    if (mTaskId == 1)
+            mConnection.setMode(IComm::REC);
+            mConnection.setData(&mAfterSend);
+            mConnection.sync(i);
+        }
+    } else
     {
         mConnection.setMode(IComm::REC);
         mConnection.setData(&mAfterSend);
         mConnection.sync();
+
+        mConnection.setMode(IComm::SSEND);
+        mConnection.setData(&mAfterSend);
+        mConnection.sync(0);
+
+        mBeforeSend.setEndIndex(mTaskId);
+
         compareResult(mBeforeSend, mAfterSend);
     }
 }

@@ -25,7 +25,6 @@ TEST(TestSerialization, testLoadSpec)
     DataSet::Control::LoadSpec before;
 
     before.setConfigFilePath("/tmp/fakedPath.conf");
-    before.setControlId(1);
     before.setStartIndex(1);
     before.setEndIndex(100);
     before.setExecutorType(DataSet::Executor::MOCK);
@@ -52,7 +51,6 @@ TEST(TestSerialization, testLoadSpec)
     after.deserialize();
 
     EXPECT_EQ (before.getConfigFilePath().compare(after.getConfigFilePath()), 0);
-    EXPECT_EQ (before.getControlId(), after.getControlId());
     EXPECT_EQ (before.getStartIndex(), after.getStartIndex());
     EXPECT_EQ (before.getEndIndex(), after.getEndIndex());
     EXPECT_EQ (before.getExecutorType(), after.getExecutorType());
